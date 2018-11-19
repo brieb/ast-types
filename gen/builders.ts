@@ -3,53 +3,53 @@ import * as K from "./kinds";
 import * as N from "./nodes";
 
 export interface SourceLocationBuilder {
-  (start: K.PositionKind, end: K.PositionKind, source?: string | null): N.SourceLocation;
-  from(
+  <T = {}>(start: K.PositionKind, end: K.PositionKind, source?: string | null): N.SourceLocation & T;
+  from<T = {}>(
     params: {
       end: K.PositionKind,
       source?: string | null,
       start: K.PositionKind
     }
-  ): N.SourceLocation;
+  ): N.SourceLocation & T;
 }
 
 export interface PositionBuilder {
-  (line: number, column: number): N.Position;
-  from(
+  <T = {}>(line: number, column: number): N.Position & T;
+  from<T = {}>(
     params: {
       column: number,
       line: number
     }
-  ): N.Position;
+  ): N.Position & T;
 }
 
 export interface FileBuilder {
-  (program: K.ProgramKind, name?: string | null): N.File;
-  from(
+  <T = {}>(program: K.ProgramKind, name?: string | null): N.File & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       name?: string | null,
       program: K.ProgramKind
     }
-  ): N.File;
+  ): N.File & T;
 }
 
 export interface ProgramBuilder {
-  (body: K.StatementKind[]): N.Program;
-  from(
+  <T = {}>(body: K.StatementKind[]): N.Program & T;
+  from<T = {}>(
     params: {
       body: K.StatementKind[],
       comments?: K.CommentKind[] | null,
       directives?: K.DirectiveKind[],
       loc?: K.SourceLocationKind | null
     }
-  ): N.Program;
+  ): N.Program & T;
 }
 
 export interface IdentifierBuilder {
-  (name: string): N.Identifier;
-  from(
+  <T = {}>(name: string): N.Identifier & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -57,49 +57,49 @@ export interface IdentifierBuilder {
       optional?: boolean,
       typeAnnotation?: K.TypeAnnotationKind | K.TSTypeAnnotationKind | null
     }
-  ): N.Identifier;
+  ): N.Identifier & T;
 }
 
 export interface BlockStatementBuilder {
-  (body: K.StatementKind[]): N.BlockStatement;
-  from(
+  <T = {}>(body: K.StatementKind[]): N.BlockStatement & T;
+  from<T = {}>(
     params: {
       body: K.StatementKind[],
       comments?: K.CommentKind[] | null,
       directives?: K.DirectiveKind[],
       loc?: K.SourceLocationKind | null
     }
-  ): N.BlockStatement;
+  ): N.BlockStatement & T;
 }
 
 export interface EmptyStatementBuilder {
-  (): N.EmptyStatement;
-  from(
+  <T = {}>(): N.EmptyStatement & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.EmptyStatement;
+  ): N.EmptyStatement & T;
 }
 
 export interface ExpressionStatementBuilder {
-  (expression: K.ExpressionKind): N.ExpressionStatement;
-  from(
+  <T = {}>(expression: K.ExpressionKind): N.ExpressionStatement & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expression: K.ExpressionKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ExpressionStatement;
+  ): N.ExpressionStatement & T;
 }
 
 export interface IfStatementBuilder {
-  (
+  <T = {}>(
     test: K.ExpressionKind,
     consequent: K.StatementKind,
     alternate?: K.StatementKind | null
-  ): N.IfStatement;
-  from(
+  ): N.IfStatement & T;
+  from<T = {}>(
     params: {
       alternate?: K.StatementKind | null,
       comments?: K.CommentKind[] | null,
@@ -107,62 +107,62 @@ export interface IfStatementBuilder {
       loc?: K.SourceLocationKind | null,
       test: K.ExpressionKind
     }
-  ): N.IfStatement;
+  ): N.IfStatement & T;
 }
 
 export interface LabeledStatementBuilder {
-  (label: K.IdentifierKind, body: K.StatementKind): N.LabeledStatement;
-  from(
+  <T = {}>(label: K.IdentifierKind, body: K.StatementKind): N.LabeledStatement & T;
+  from<T = {}>(
     params: {
       body: K.StatementKind,
       comments?: K.CommentKind[] | null,
       label: K.IdentifierKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.LabeledStatement;
+  ): N.LabeledStatement & T;
 }
 
 export interface BreakStatementBuilder {
-  (label?: K.IdentifierKind | null): N.BreakStatement;
-  from(
+  <T = {}>(label?: K.IdentifierKind | null): N.BreakStatement & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       label?: K.IdentifierKind | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.BreakStatement;
+  ): N.BreakStatement & T;
 }
 
 export interface ContinueStatementBuilder {
-  (label?: K.IdentifierKind | null): N.ContinueStatement;
-  from(
+  <T = {}>(label?: K.IdentifierKind | null): N.ContinueStatement & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       label?: K.IdentifierKind | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ContinueStatement;
+  ): N.ContinueStatement & T;
 }
 
 export interface WithStatementBuilder {
-  (object: K.ExpressionKind, body: K.StatementKind): N.WithStatement;
-  from(
+  <T = {}>(object: K.ExpressionKind, body: K.StatementKind): N.WithStatement & T;
+  from<T = {}>(
     params: {
       body: K.StatementKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       object: K.ExpressionKind
     }
-  ): N.WithStatement;
+  ): N.WithStatement & T;
 }
 
 export interface SwitchStatementBuilder {
-  (
+  <T = {}>(
     discriminant: K.ExpressionKind,
     cases: K.SwitchCaseKind[],
     lexical?: boolean
-  ): N.SwitchStatement;
-  from(
+  ): N.SwitchStatement & T;
+  from<T = {}>(
     params: {
       cases: K.SwitchCaseKind[],
       comments?: K.CommentKind[] | null,
@@ -170,50 +170,50 @@ export interface SwitchStatementBuilder {
       lexical?: boolean,
       loc?: K.SourceLocationKind | null
     }
-  ): N.SwitchStatement;
+  ): N.SwitchStatement & T;
 }
 
 export interface SwitchCaseBuilder {
-  (test: K.ExpressionKind | null, consequent: K.StatementKind[]): N.SwitchCase;
-  from(
+  <T = {}>(test: K.ExpressionKind | null, consequent: K.StatementKind[]): N.SwitchCase & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       consequent: K.StatementKind[],
       loc?: K.SourceLocationKind | null,
       test?: K.ExpressionKind | null
     }
-  ): N.SwitchCase;
+  ): N.SwitchCase & T;
 }
 
 export interface ReturnStatementBuilder {
-  (argument: K.ExpressionKind | null): N.ReturnStatement;
-  from(
+  <T = {}>(argument: K.ExpressionKind | null): N.ReturnStatement & T;
+  from<T = {}>(
     params: {
       argument?: K.ExpressionKind | null,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ReturnStatement;
+  ): N.ReturnStatement & T;
 }
 
 export interface ThrowStatementBuilder {
-  (argument: K.ExpressionKind): N.ThrowStatement;
-  from(
+  <T = {}>(argument: K.ExpressionKind): N.ThrowStatement & T;
+  from<T = {}>(
     params: {
       argument: K.ExpressionKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ThrowStatement;
+  ): N.ThrowStatement & T;
 }
 
 export interface TryStatementBuilder {
-  (
+  <T = {}>(
     block: K.BlockStatementKind,
     handler?: K.CatchClauseKind | null,
     finalizer?: K.BlockStatementKind | null
-  ): N.TryStatement;
-  from(
+  ): N.TryStatement & T;
+  from<T = {}>(
     params: {
       block: K.BlockStatementKind,
       comments?: K.CommentKind[] | null,
@@ -223,16 +223,16 @@ export interface TryStatementBuilder {
       handlers?: K.CatchClauseKind[],
       loc?: K.SourceLocationKind | null
     }
-  ): N.TryStatement;
+  ): N.TryStatement & T;
 }
 
 export interface CatchClauseBuilder {
-  (
+  <T = {}>(
     param: K.PatternKind | null | undefined,
     guard: K.ExpressionKind | null | undefined,
     body: K.BlockStatementKind
-  ): N.CatchClause;
-  from(
+  ): N.CatchClause & T;
+  from<T = {}>(
     params: {
       body: K.BlockStatementKind,
       comments?: K.CommentKind[] | null,
@@ -240,41 +240,41 @@ export interface CatchClauseBuilder {
       loc?: K.SourceLocationKind | null,
       param?: K.PatternKind | null
     }
-  ): N.CatchClause;
+  ): N.CatchClause & T;
 }
 
 export interface WhileStatementBuilder {
-  (test: K.ExpressionKind, body: K.StatementKind): N.WhileStatement;
-  from(
+  <T = {}>(test: K.ExpressionKind, body: K.StatementKind): N.WhileStatement & T;
+  from<T = {}>(
     params: {
       body: K.StatementKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       test: K.ExpressionKind
     }
-  ): N.WhileStatement;
+  ): N.WhileStatement & T;
 }
 
 export interface DoWhileStatementBuilder {
-  (body: K.StatementKind, test: K.ExpressionKind): N.DoWhileStatement;
-  from(
+  <T = {}>(body: K.StatementKind, test: K.ExpressionKind): N.DoWhileStatement & T;
+  from<T = {}>(
     params: {
       body: K.StatementKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       test: K.ExpressionKind
     }
-  ): N.DoWhileStatement;
+  ): N.DoWhileStatement & T;
 }
 
 export interface ForStatementBuilder {
-  (
+  <T = {}>(
     init: K.VariableDeclarationKind | K.ExpressionKind | null,
     test: K.ExpressionKind | null,
     update: K.ExpressionKind | null,
     body: K.StatementKind
-  ): N.ForStatement;
-  from(
+  ): N.ForStatement & T;
+  from<T = {}>(
     params: {
       body: K.StatementKind,
       comments?: K.CommentKind[] | null,
@@ -283,32 +283,32 @@ export interface ForStatementBuilder {
       test?: K.ExpressionKind | null,
       update?: K.ExpressionKind | null
     }
-  ): N.ForStatement;
+  ): N.ForStatement & T;
 }
 
 export interface VariableDeclarationBuilder {
-  (
+  <T = {}>(
     kind: "var" | "let" | "const",
     declarations: (K.VariableDeclaratorKind | K.IdentifierKind)[]
-  ): N.VariableDeclaration;
-  from(
+  ): N.VariableDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       declarations: (K.VariableDeclaratorKind | K.IdentifierKind)[],
       kind: "var" | "let" | "const",
       loc?: K.SourceLocationKind | null
     }
-  ): N.VariableDeclaration;
+  ): N.VariableDeclaration & T;
 }
 
 export interface ForInStatementBuilder {
-  (
+  <T = {}>(
     left: K.VariableDeclarationKind | K.ExpressionKind,
     right: K.ExpressionKind,
     body: K.StatementKind,
     each?: boolean
-  ): N.ForInStatement;
-  from(
+  ): N.ForInStatement & T;
+  from<T = {}>(
     params: {
       body: K.StatementKind,
       comments?: K.CommentKind[] | null,
@@ -317,28 +317,28 @@ export interface ForInStatementBuilder {
       loc?: K.SourceLocationKind | null,
       right: K.ExpressionKind
     }
-  ): N.ForInStatement;
+  ): N.ForInStatement & T;
 }
 
 export interface DebuggerStatementBuilder {
-  (): N.DebuggerStatement;
-  from(
+  <T = {}>(): N.DebuggerStatement & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.DebuggerStatement;
+  ): N.DebuggerStatement & T;
 }
 
 export interface FunctionDeclarationBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind,
     params: K.PatternKind[],
     body: K.BlockStatementKind | K.ExpressionKind,
     generator?: boolean,
     expression?: boolean
-  ): N.FunctionDeclaration;
-  from(
+  ): N.FunctionDeclaration & T;
+  from<T = {}>(
     params: {
       async?: boolean,
       body: K.BlockStatementKind | K.ExpressionKind,
@@ -353,18 +353,18 @@ export interface FunctionDeclarationBuilder {
       returnType?: K.TypeAnnotationKind | null,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.FunctionDeclaration;
+  ): N.FunctionDeclaration & T;
 }
 
 export interface FunctionExpressionBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind | null | undefined,
     params: K.PatternKind[],
     body: K.BlockStatementKind | K.ExpressionKind,
     generator?: boolean,
     expression?: boolean
-  ): N.FunctionExpression;
-  from(
+  ): N.FunctionExpression & T;
+  from<T = {}>(
     params: {
       async?: boolean,
       body: K.BlockStatementKind | K.ExpressionKind,
@@ -379,64 +379,64 @@ export interface FunctionExpressionBuilder {
       returnType?: K.TypeAnnotationKind | null,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.FunctionExpression;
+  ): N.FunctionExpression & T;
 }
 
 export interface VariableDeclaratorBuilder {
-  (id: K.PatternKind, init: K.ExpressionKind | null): N.VariableDeclarator;
-  from(
+  <T = {}>(id: K.PatternKind, init: K.ExpressionKind | null): N.VariableDeclarator & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.PatternKind,
       init?: K.ExpressionKind | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.VariableDeclarator;
+  ): N.VariableDeclarator & T;
 }
 
 export interface ThisExpressionBuilder {
-  (): N.ThisExpression;
-  from(
+  <T = {}>(): N.ThisExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ThisExpression;
+  ): N.ThisExpression & T;
 }
 
 export interface ArrayExpressionBuilder {
-  (
+  <T = {}>(
     elements: (K.ExpressionKind | K.SpreadElementKind | K.RestElementKind | null)[]
-  ): N.ArrayExpression;
-  from(
+  ): N.ArrayExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       elements: (K.ExpressionKind | K.SpreadElementKind | K.RestElementKind | null)[],
       loc?: K.SourceLocationKind | null
     }
-  ): N.ArrayExpression;
+  ): N.ArrayExpression & T;
 }
 
 export interface ObjectExpressionBuilder {
-  (
+  <T = {}>(
     properties: (K.PropertyKind | K.ObjectMethodKind | K.ObjectPropertyKind | K.SpreadPropertyKind | K.SpreadElementKind)[]
-  ): N.ObjectExpression;
-  from(
+  ): N.ObjectExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       properties: (K.PropertyKind | K.ObjectMethodKind | K.ObjectPropertyKind | K.SpreadPropertyKind | K.SpreadElementKind)[]
     }
-  ): N.ObjectExpression;
+  ): N.ObjectExpression & T;
 }
 
 export interface PropertyBuilder {
-  (
+  <T = {}>(
     kind: "init" | "get" | "set",
     key: K.LiteralKind | K.IdentifierKind | K.ExpressionKind,
     value: K.ExpressionKind | K.PatternKind
-  ): N.Property;
-  from(
+  ): N.Property & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       computed?: boolean,
@@ -448,12 +448,12 @@ export interface PropertyBuilder {
       shorthand?: boolean,
       value: K.ExpressionKind | K.PatternKind
     }
-  ): N.Property;
+  ): N.Property & T;
 }
 
 export interface LiteralBuilder {
-  (value: string | boolean | null | number | RegExp): N.Literal;
-  from(
+  <T = {}>(value: string | boolean | null | number | RegExp): N.Literal & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -463,27 +463,27 @@ export interface LiteralBuilder {
       } | null,
       value?: string | boolean | null | number | RegExp
     }
-  ): N.Literal;
+  ): N.Literal & T;
 }
 
 export interface SequenceExpressionBuilder {
-  (expressions: K.ExpressionKind[]): N.SequenceExpression;
-  from(
+  <T = {}>(expressions: K.ExpressionKind[]): N.SequenceExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expressions: K.ExpressionKind[],
       loc?: K.SourceLocationKind | null
     }
-  ): N.SequenceExpression;
+  ): N.SequenceExpression & T;
 }
 
 export interface UnaryExpressionBuilder {
-  (
+  <T = {}>(
     operator: "-" | "+" | "!" | "~" | "typeof" | "void" | "delete",
     argument: K.ExpressionKind,
     prefix?: boolean
-  ): N.UnaryExpression;
-  from(
+  ): N.UnaryExpression & T;
+  from<T = {}>(
     params: {
       argument: K.ExpressionKind,
       comments?: K.CommentKind[] | null,
@@ -491,16 +491,16 @@ export interface UnaryExpressionBuilder {
       operator: "-" | "+" | "!" | "~" | "typeof" | "void" | "delete",
       prefix?: boolean
     }
-  ): N.UnaryExpression;
+  ): N.UnaryExpression & T;
 }
 
 export interface BinaryExpressionBuilder {
-  (
+  <T = {}>(
     operator: "==" | "!=" | "===" | "!==" | "<" | "<=" | ">" | ">=" | "<<" | ">>" | ">>>" | "+" | "-" | "*" | "/" | "%" | "**" | "&" | "|" | "^" | "in" | "instanceof" | "..",
     left: K.ExpressionKind,
     right: K.ExpressionKind
-  ): N.BinaryExpression;
-  from(
+  ): N.BinaryExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       left: K.ExpressionKind,
@@ -508,16 +508,16 @@ export interface BinaryExpressionBuilder {
       operator: "==" | "!=" | "===" | "!==" | "<" | "<=" | ">" | ">=" | "<<" | ">>" | ">>>" | "+" | "-" | "*" | "/" | "%" | "**" | "&" | "|" | "^" | "in" | "instanceof" | "..",
       right: K.ExpressionKind
     }
-  ): N.BinaryExpression;
+  ): N.BinaryExpression & T;
 }
 
 export interface AssignmentExpressionBuilder {
-  (
+  <T = {}>(
     operator: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | ">>>=" | "|=" | "^=" | "&=",
     left: K.PatternKind,
     right: K.ExpressionKind
-  ): N.AssignmentExpression;
-  from(
+  ): N.AssignmentExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       left: K.PatternKind,
@@ -525,12 +525,12 @@ export interface AssignmentExpressionBuilder {
       operator: "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | ">>>=" | "|=" | "^=" | "&=",
       right: K.ExpressionKind
     }
-  ): N.AssignmentExpression;
+  ): N.AssignmentExpression & T;
 }
 
 export interface UpdateExpressionBuilder {
-  (operator: "++" | "--", argument: K.ExpressionKind, prefix: boolean): N.UpdateExpression;
-  from(
+  <T = {}>(operator: "++" | "--", argument: K.ExpressionKind, prefix: boolean): N.UpdateExpression & T;
+  from<T = {}>(
     params: {
       argument: K.ExpressionKind,
       comments?: K.CommentKind[] | null,
@@ -538,16 +538,16 @@ export interface UpdateExpressionBuilder {
       operator: "++" | "--",
       prefix: boolean
     }
-  ): N.UpdateExpression;
+  ): N.UpdateExpression & T;
 }
 
 export interface LogicalExpressionBuilder {
-  (
+  <T = {}>(
     operator: "||" | "&&" | "??",
     left: K.ExpressionKind,
     right: K.ExpressionKind
-  ): N.LogicalExpression;
-  from(
+  ): N.LogicalExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       left: K.ExpressionKind,
@@ -555,16 +555,16 @@ export interface LogicalExpressionBuilder {
       operator: "||" | "&&" | "??",
       right: K.ExpressionKind
     }
-  ): N.LogicalExpression;
+  ): N.LogicalExpression & T;
 }
 
 export interface ConditionalExpressionBuilder {
-  (
+  <T = {}>(
     test: K.ExpressionKind,
     consequent: K.ExpressionKind,
     alternate: K.ExpressionKind
-  ): N.ConditionalExpression;
-  from(
+  ): N.ConditionalExpression & T;
+  from<T = {}>(
     params: {
       alternate: K.ExpressionKind,
       comments?: K.CommentKind[] | null,
@@ -572,46 +572,46 @@ export interface ConditionalExpressionBuilder {
       loc?: K.SourceLocationKind | null,
       test: K.ExpressionKind
     }
-  ): N.ConditionalExpression;
+  ): N.ConditionalExpression & T;
 }
 
 export interface NewExpressionBuilder {
-  (
+  <T = {}>(
     callee: K.ExpressionKind,
     argumentsParam: (K.ExpressionKind | K.SpreadElementKind)[]
-  ): N.NewExpression;
-  from(
+  ): N.NewExpression & T;
+  from<T = {}>(
     params: {
       arguments: (K.ExpressionKind | K.SpreadElementKind)[],
       callee: K.ExpressionKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.NewExpression;
+  ): N.NewExpression & T;
 }
 
 export interface CallExpressionBuilder {
-  (
+  <T = {}>(
     callee: K.ExpressionKind,
     argumentsParam: (K.ExpressionKind | K.SpreadElementKind)[]
-  ): N.CallExpression;
-  from(
+  ): N.CallExpression & T;
+  from<T = {}>(
     params: {
       arguments: (K.ExpressionKind | K.SpreadElementKind)[],
       callee: K.ExpressionKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.CallExpression;
+  ): N.CallExpression & T;
 }
 
 export interface MemberExpressionBuilder {
-  (
+  <T = {}>(
     object: K.ExpressionKind,
     property: K.IdentifierKind | K.ExpressionKind,
     computed?: boolean
-  ): N.MemberExpression;
-  from(
+  ): N.MemberExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       computed?: boolean,
@@ -619,61 +619,61 @@ export interface MemberExpressionBuilder {
       object: K.ExpressionKind,
       property: K.IdentifierKind | K.ExpressionKind
     }
-  ): N.MemberExpression;
+  ): N.MemberExpression & T;
 }
 
 export interface RestElementBuilder {
-  (argument: K.PatternKind): N.RestElement;
-  from(
+  <T = {}>(argument: K.PatternKind): N.RestElement & T;
+  from<T = {}>(
     params: {
       argument: K.PatternKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       typeAnnotation?: K.TypeAnnotationKind | K.TSTypeAnnotationKind | null
     }
-  ): N.RestElement;
+  ): N.RestElement & T;
 }
 
 export interface TypeAnnotationBuilder {
-  (typeAnnotation: K.FlowTypeKind): N.TypeAnnotation;
-  from(
+  <T = {}>(typeAnnotation: K.FlowTypeKind): N.TypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       typeAnnotation: K.FlowTypeKind
     }
-  ): N.TypeAnnotation;
+  ): N.TypeAnnotation & T;
 }
 
 export interface TSTypeAnnotationBuilder {
-  (typeAnnotation: K.TSTypeKind | K.TSTypeAnnotationKind): N.TSTypeAnnotation;
-  from(
+  <T = {}>(typeAnnotation: K.TSTypeKind | K.TSTypeAnnotationKind): N.TSTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       typeAnnotation: K.TSTypeKind | K.TSTypeAnnotationKind
     }
-  ): N.TSTypeAnnotation;
+  ): N.TSTypeAnnotation & T;
 }
 
 export interface SpreadElementPatternBuilder {
-  (argument: K.PatternKind): N.SpreadElementPattern;
-  from(
+  <T = {}>(argument: K.PatternKind): N.SpreadElementPattern & T;
+  from<T = {}>(
     params: {
       argument: K.PatternKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.SpreadElementPattern;
+  ): N.SpreadElementPattern & T;
 }
 
 export interface ArrowFunctionExpressionBuilder {
-  (
+  <T = {}>(
     params: K.PatternKind[],
     body: K.BlockStatementKind | K.ExpressionKind,
     expression?: boolean
-  ): N.ArrowFunctionExpression;
-  from(
+  ): N.ArrowFunctionExpression & T;
+  from<T = {}>(
     params: {
       async?: boolean,
       body: K.BlockStatementKind | K.ExpressionKind,
@@ -688,16 +688,16 @@ export interface ArrowFunctionExpressionBuilder {
       returnType?: K.TypeAnnotationKind | null,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.ArrowFunctionExpression;
+  ): N.ArrowFunctionExpression & T;
 }
 
 export interface ForOfStatementBuilder {
-  (
+  <T = {}>(
     left: K.VariableDeclarationKind | K.PatternKind,
     right: K.ExpressionKind,
     body: K.StatementKind
-  ): N.ForOfStatement;
-  from(
+  ): N.ForOfStatement & T;
+  from<T = {}>(
     params: {
       body: K.StatementKind,
       comments?: K.CommentKind[] | null,
@@ -705,28 +705,28 @@ export interface ForOfStatementBuilder {
       loc?: K.SourceLocationKind | null,
       right: K.ExpressionKind
     }
-  ): N.ForOfStatement;
+  ): N.ForOfStatement & T;
 }
 
 export interface YieldExpressionBuilder {
-  (argument: K.ExpressionKind | null, delegate?: boolean): N.YieldExpression;
-  from(
+  <T = {}>(argument: K.ExpressionKind | null, delegate?: boolean): N.YieldExpression & T;
+  from<T = {}>(
     params: {
       argument?: K.ExpressionKind | null,
       comments?: K.CommentKind[] | null,
       delegate?: boolean,
       loc?: K.SourceLocationKind | null
     }
-  ): N.YieldExpression;
+  ): N.YieldExpression & T;
 }
 
 export interface GeneratorExpressionBuilder {
-  (
+  <T = {}>(
     body: K.ExpressionKind,
     blocks: K.ComprehensionBlockKind[],
     filter: K.ExpressionKind | null
-  ): N.GeneratorExpression;
-  from(
+  ): N.GeneratorExpression & T;
+  from<T = {}>(
     params: {
       blocks: K.ComprehensionBlockKind[],
       body: K.ExpressionKind,
@@ -734,12 +734,12 @@ export interface GeneratorExpressionBuilder {
       filter?: K.ExpressionKind | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.GeneratorExpression;
+  ): N.GeneratorExpression & T;
 }
 
 export interface ComprehensionBlockBuilder {
-  (left: K.PatternKind, right: K.ExpressionKind, each: boolean): N.ComprehensionBlock;
-  from(
+  <T = {}>(left: K.PatternKind, right: K.ExpressionKind, each: boolean): N.ComprehensionBlock & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       each: boolean,
@@ -747,16 +747,16 @@ export interface ComprehensionBlockBuilder {
       loc?: K.SourceLocationKind | null,
       right: K.ExpressionKind
     }
-  ): N.ComprehensionBlock;
+  ): N.ComprehensionBlock & T;
 }
 
 export interface ComprehensionExpressionBuilder {
-  (
+  <T = {}>(
     body: K.ExpressionKind,
     blocks: K.ComprehensionBlockKind[],
     filter: K.ExpressionKind | null
-  ): N.ComprehensionExpression;
-  from(
+  ): N.ComprehensionExpression & T;
+  from<T = {}>(
     params: {
       blocks: K.ComprehensionBlockKind[],
       body: K.ExpressionKind,
@@ -764,15 +764,15 @@ export interface ComprehensionExpressionBuilder {
       filter?: K.ExpressionKind | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ComprehensionExpression;
+  ): N.ComprehensionExpression & T;
 }
 
 export interface PropertyPatternBuilder {
-  (
+  <T = {}>(
     key: K.LiteralKind | K.IdentifierKind | K.ExpressionKind,
     pattern: K.PatternKind
-  ): N.PropertyPattern;
-  from(
+  ): N.PropertyPattern & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       computed?: boolean,
@@ -780,14 +780,14 @@ export interface PropertyPatternBuilder {
       loc?: K.SourceLocationKind | null,
       pattern: K.PatternKind
     }
-  ): N.PropertyPattern;
+  ): N.PropertyPattern & T;
 }
 
 export interface ObjectPatternBuilder {
-  (
+  <T = {}>(
     properties: (K.PropertyKind | K.PropertyPatternKind | K.SpreadPropertyPatternKind | K.SpreadPropertyKind | K.ObjectPropertyKind | K.RestPropertyKind)[]
-  ): N.ObjectPattern;
-  from(
+  ): N.ObjectPattern & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       decorators?: K.DecoratorKind[] | null,
@@ -795,28 +795,28 @@ export interface ObjectPatternBuilder {
       properties: (K.PropertyKind | K.PropertyPatternKind | K.SpreadPropertyPatternKind | K.SpreadPropertyKind | K.ObjectPropertyKind | K.RestPropertyKind)[],
       typeAnnotation?: K.TypeAnnotationKind | null
     }
-  ): N.ObjectPattern;
+  ): N.ObjectPattern & T;
 }
 
 export interface ArrayPatternBuilder {
-  (elements: (K.PatternKind | K.SpreadElementKind | null)[]): N.ArrayPattern;
-  from(
+  <T = {}>(elements: (K.PatternKind | K.SpreadElementKind | null)[]): N.ArrayPattern & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       elements: (K.PatternKind | K.SpreadElementKind | null)[],
       loc?: K.SourceLocationKind | null
     }
-  ): N.ArrayPattern;
+  ): N.ArrayPattern & T;
 }
 
 export interface MethodDefinitionBuilder {
-  (
+  <T = {}>(
     kind: "constructor" | "method" | "get" | "set",
     key: K.ExpressionKind,
     value: K.FunctionKind,
     staticParam?: boolean
-  ): N.MethodDefinition;
-  from(
+  ): N.MethodDefinition & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       computed?: boolean,
@@ -827,53 +827,53 @@ export interface MethodDefinitionBuilder {
       static?: boolean,
       value: K.FunctionKind
     }
-  ): N.MethodDefinition;
+  ): N.MethodDefinition & T;
 }
 
 export interface SpreadElementBuilder {
-  (argument: K.ExpressionKind): N.SpreadElement;
-  from(
+  <T = {}>(argument: K.ExpressionKind): N.SpreadElement & T;
+  from<T = {}>(
     params: {
       argument: K.ExpressionKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.SpreadElement;
+  ): N.SpreadElement & T;
 }
 
 export interface AssignmentPatternBuilder {
-  (left: K.PatternKind, right: K.ExpressionKind): N.AssignmentPattern;
-  from(
+  <T = {}>(left: K.PatternKind, right: K.ExpressionKind): N.AssignmentPattern & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       left: K.PatternKind,
       loc?: K.SourceLocationKind | null,
       right: K.ExpressionKind
     }
-  ): N.AssignmentPattern;
+  ): N.AssignmentPattern & T;
 }
 
 export interface ClassPropertyDefinitionBuilder {
-  (
+  <T = {}>(
     definition: K.MethodDefinitionKind | K.VariableDeclaratorKind | K.ClassPropertyDefinitionKind | K.ClassPropertyKind
-  ): N.ClassPropertyDefinition;
-  from(
+  ): N.ClassPropertyDefinition & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       definition: K.MethodDefinitionKind | K.VariableDeclaratorKind | K.ClassPropertyDefinitionKind | K.ClassPropertyKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ClassPropertyDefinition;
+  ): N.ClassPropertyDefinition & T;
 }
 
 export interface ClassPropertyBuilder {
-  (
+  <T = {}>(
     key: K.LiteralKind | K.IdentifierKind | K.ExpressionKind,
     value: K.ExpressionKind | null,
     typeAnnotation: K.TypeAnnotationKind | null,
     staticParam?: boolean
-  ): N.ClassProperty;
-  from(
+  ): N.ClassProperty & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       computed?: boolean,
@@ -884,29 +884,29 @@ export interface ClassPropertyBuilder {
       value?: K.ExpressionKind | null,
       variance?: K.VarianceKind | "plus" | "minus" | null
     }
-  ): N.ClassProperty;
+  ): N.ClassProperty & T;
 }
 
 export interface ClassBodyBuilder {
-  (
+  <T = {}>(
     body: (K.MethodDefinitionKind | K.VariableDeclaratorKind | K.ClassPropertyDefinitionKind | K.ClassPropertyKind | K.ClassMethodKind | K.TSDeclareMethodKind | K.TSCallSignatureDeclarationKind | K.TSConstructSignatureDeclarationKind | K.TSIndexSignatureKind | K.TSMethodSignatureKind | K.TSPropertySignatureKind)[]
-  ): N.ClassBody;
-  from(
+  ): N.ClassBody & T;
+  from<T = {}>(
     params: {
       body: (K.MethodDefinitionKind | K.VariableDeclaratorKind | K.ClassPropertyDefinitionKind | K.ClassPropertyKind | K.ClassMethodKind | K.TSDeclareMethodKind | K.TSCallSignatureDeclarationKind | K.TSConstructSignatureDeclarationKind | K.TSIndexSignatureKind | K.TSMethodSignatureKind | K.TSPropertySignatureKind)[],
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ClassBody;
+  ): N.ClassBody & T;
 }
 
 export interface ClassDeclarationBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind | null,
     body: K.ClassBodyKind,
     superClass?: K.ExpressionKind | null
-  ): N.ClassDeclaration;
-  from(
+  ): N.ClassDeclaration & T;
+  from<T = {}>(
     params: {
       body: K.ClassBodyKind,
       comments?: K.CommentKind[] | null,
@@ -917,16 +917,16 @@ export interface ClassDeclarationBuilder {
       superTypeParameters?: K.GenericTypeAnnotationKind[] | null,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.ClassDeclaration;
+  ): N.ClassDeclaration & T;
 }
 
 export interface ClassExpressionBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind | null | undefined,
     body: K.ClassBodyKind,
     superClass?: K.ExpressionKind | null
-  ): N.ClassExpression;
-  from(
+  ): N.ClassExpression & T;
+  from<T = {}>(
     params: {
       body: K.ClassBodyKind,
       comments?: K.CommentKind[] | null,
@@ -937,12 +937,12 @@ export interface ClassExpressionBuilder {
       superTypeParameters?: K.GenericTypeAnnotationKind[] | null,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.ClassExpression;
+  ): N.ClassExpression & T;
 }
 
 export interface ImportSpecifierBuilder {
-  (imported: K.IdentifierKind, local?: K.IdentifierKind | null): N.ImportSpecifier;
-  from(
+  <T = {}>(imported: K.IdentifierKind, local?: K.IdentifierKind | null): N.ImportSpecifier & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id?: K.IdentifierKind | null,
@@ -951,12 +951,12 @@ export interface ImportSpecifierBuilder {
       local?: K.IdentifierKind | null,
       name?: K.IdentifierKind | null
     }
-  ): N.ImportSpecifier;
+  ): N.ImportSpecifier & T;
 }
 
 export interface ImportNamespaceSpecifierBuilder {
-  (local?: K.IdentifierKind | null): N.ImportNamespaceSpecifier;
-  from(
+  <T = {}>(local?: K.IdentifierKind | null): N.ImportNamespaceSpecifier & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id?: K.IdentifierKind | null,
@@ -964,12 +964,12 @@ export interface ImportNamespaceSpecifierBuilder {
       local?: K.IdentifierKind | null,
       name?: K.IdentifierKind | null
     }
-  ): N.ImportNamespaceSpecifier;
+  ): N.ImportNamespaceSpecifier & T;
 }
 
 export interface ImportDefaultSpecifierBuilder {
-  (local?: K.IdentifierKind | null): N.ImportDefaultSpecifier;
-  from(
+  <T = {}>(local?: K.IdentifierKind | null): N.ImportDefaultSpecifier & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id?: K.IdentifierKind | null,
@@ -977,16 +977,16 @@ export interface ImportDefaultSpecifierBuilder {
       local?: K.IdentifierKind | null,
       name?: K.IdentifierKind | null
     }
-  ): N.ImportDefaultSpecifier;
+  ): N.ImportDefaultSpecifier & T;
 }
 
 export interface ImportDeclarationBuilder {
-  (
+  <T = {}>(
     specifiers: (K.ImportSpecifierKind | K.ImportNamespaceSpecifierKind | K.ImportDefaultSpecifierKind)[] | undefined,
     source: K.LiteralKind,
     importKind?: "value" | "type"
-  ): N.ImportDeclaration;
-  from(
+  ): N.ImportDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       importKind?: "value" | "type",
@@ -994,42 +994,42 @@ export interface ImportDeclarationBuilder {
       source: K.LiteralKind,
       specifiers?: (K.ImportSpecifierKind | K.ImportNamespaceSpecifierKind | K.ImportDefaultSpecifierKind)[]
     }
-  ): N.ImportDeclaration;
+  ): N.ImportDeclaration & T;
 }
 
 export interface TaggedTemplateExpressionBuilder {
-  (tag: K.ExpressionKind, quasi: K.TemplateLiteralKind): N.TaggedTemplateExpression;
-  from(
+  <T = {}>(tag: K.ExpressionKind, quasi: K.TemplateLiteralKind): N.TaggedTemplateExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       quasi: K.TemplateLiteralKind,
       tag: K.ExpressionKind
     }
-  ): N.TaggedTemplateExpression;
+  ): N.TaggedTemplateExpression & T;
 }
 
 export interface TemplateLiteralBuilder {
-  (quasis: K.TemplateElementKind[], expressions: K.ExpressionKind[]): N.TemplateLiteral;
-  from(
+  <T = {}>(quasis: K.TemplateElementKind[], expressions: K.ExpressionKind[]): N.TemplateLiteral & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expressions: K.ExpressionKind[],
       loc?: K.SourceLocationKind | null,
       quasis: K.TemplateElementKind[]
     }
-  ): N.TemplateLiteral;
+  ): N.TemplateLiteral & T;
 }
 
 export interface TemplateElementBuilder {
-  (
+  <T = {}>(
     value: {
       "cooked": string,
       "raw": string
     },
     tail: boolean
-  ): N.TemplateElement;
-  from(
+  ): N.TemplateElement & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -1039,108 +1039,108 @@ export interface TemplateElementBuilder {
         "raw": string
       }
     }
-  ): N.TemplateElement;
+  ): N.TemplateElement & T;
 }
 
 export interface SpreadPropertyBuilder {
-  (argument: K.ExpressionKind): N.SpreadProperty;
-  from(
+  <T = {}>(argument: K.ExpressionKind): N.SpreadProperty & T;
+  from<T = {}>(
     params: {
       argument: K.ExpressionKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.SpreadProperty;
+  ): N.SpreadProperty & T;
 }
 
 export interface SpreadPropertyPatternBuilder {
-  (argument: K.PatternKind): N.SpreadPropertyPattern;
-  from(
+  <T = {}>(argument: K.PatternKind): N.SpreadPropertyPattern & T;
+  from<T = {}>(
     params: {
       argument: K.PatternKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.SpreadPropertyPattern;
+  ): N.SpreadPropertyPattern & T;
 }
 
 export interface AwaitExpressionBuilder {
-  (argument: K.ExpressionKind | null, all?: boolean): N.AwaitExpression;
-  from(
+  <T = {}>(argument: K.ExpressionKind | null, all?: boolean): N.AwaitExpression & T;
+  from<T = {}>(
     params: {
       all?: boolean,
       argument?: K.ExpressionKind | null,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.AwaitExpression;
+  ): N.AwaitExpression & T;
 }
 
 export interface LetStatementBuilder {
-  (head: K.VariableDeclaratorKind[], body: K.StatementKind): N.LetStatement;
-  from(
+  <T = {}>(head: K.VariableDeclaratorKind[], body: K.StatementKind): N.LetStatement & T;
+  from<T = {}>(
     params: {
       body: K.StatementKind,
       comments?: K.CommentKind[] | null,
       head: K.VariableDeclaratorKind[],
       loc?: K.SourceLocationKind | null
     }
-  ): N.LetStatement;
+  ): N.LetStatement & T;
 }
 
 export interface LetExpressionBuilder {
-  (head: K.VariableDeclaratorKind[], body: K.ExpressionKind): N.LetExpression;
-  from(
+  <T = {}>(head: K.VariableDeclaratorKind[], body: K.ExpressionKind): N.LetExpression & T;
+  from<T = {}>(
     params: {
       body: K.ExpressionKind,
       comments?: K.CommentKind[] | null,
       head: K.VariableDeclaratorKind[],
       loc?: K.SourceLocationKind | null
     }
-  ): N.LetExpression;
+  ): N.LetExpression & T;
 }
 
 export interface GraphExpressionBuilder {
-  (index: number, expression: K.LiteralKind): N.GraphExpression;
-  from(
+  <T = {}>(index: number, expression: K.LiteralKind): N.GraphExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expression: K.LiteralKind,
       index: number,
       loc?: K.SourceLocationKind | null
     }
-  ): N.GraphExpression;
+  ): N.GraphExpression & T;
 }
 
 export interface GraphIndexExpressionBuilder {
-  (index: number): N.GraphIndexExpression;
-  from(
+  <T = {}>(index: number): N.GraphIndexExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       index: number,
       loc?: K.SourceLocationKind | null
     }
-  ): N.GraphIndexExpression;
+  ): N.GraphIndexExpression & T;
 }
 
 export interface JSXAttributeBuilder {
-  (
+  <T = {}>(
     name: K.JSXIdentifierKind | K.JSXNamespacedNameKind,
     value?: K.LiteralKind | K.JSXExpressionContainerKind | null
-  ): N.JSXAttribute;
-  from(
+  ): N.JSXAttribute & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       name: K.JSXIdentifierKind | K.JSXNamespacedNameKind,
       value?: K.LiteralKind | K.JSXExpressionContainerKind | null
     }
-  ): N.JSXAttribute;
+  ): N.JSXAttribute & T;
 }
 
 export interface JSXIdentifierBuilder {
-  (name: string): N.JSXIdentifier;
-  from(
+  <T = {}>(name: string): N.JSXIdentifier & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -1148,38 +1148,38 @@ export interface JSXIdentifierBuilder {
       optional?: boolean,
       typeAnnotation?: K.TypeAnnotationKind | K.TSTypeAnnotationKind | null
     }
-  ): N.JSXIdentifier;
+  ): N.JSXIdentifier & T;
 }
 
 export interface JSXNamespacedNameBuilder {
-  (namespace: K.JSXIdentifierKind, name: K.JSXIdentifierKind): N.JSXNamespacedName;
-  from(
+  <T = {}>(namespace: K.JSXIdentifierKind, name: K.JSXIdentifierKind): N.JSXNamespacedName & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       name: K.JSXIdentifierKind,
       namespace: K.JSXIdentifierKind
     }
-  ): N.JSXNamespacedName;
+  ): N.JSXNamespacedName & T;
 }
 
 export interface JSXExpressionContainerBuilder {
-  (expression: K.ExpressionKind): N.JSXExpressionContainer;
-  from(
+  <T = {}>(expression: K.ExpressionKind): N.JSXExpressionContainer & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expression: K.ExpressionKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.JSXExpressionContainer;
+  ): N.JSXExpressionContainer & T;
 }
 
 export interface JSXMemberExpressionBuilder {
-  (
+  <T = {}>(
     object: K.JSXIdentifierKind | K.JSXMemberExpressionKind,
     property: K.JSXIdentifierKind
-  ): N.JSXMemberExpression;
-  from(
+  ): N.JSXMemberExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       computed?: boolean,
@@ -1187,27 +1187,27 @@ export interface JSXMemberExpressionBuilder {
       object: K.JSXIdentifierKind | K.JSXMemberExpressionKind,
       property: K.JSXIdentifierKind
     }
-  ): N.JSXMemberExpression;
+  ): N.JSXMemberExpression & T;
 }
 
 export interface JSXSpreadAttributeBuilder {
-  (argument: K.ExpressionKind): N.JSXSpreadAttribute;
-  from(
+  <T = {}>(argument: K.ExpressionKind): N.JSXSpreadAttribute & T;
+  from<T = {}>(
     params: {
       argument: K.ExpressionKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.JSXSpreadAttribute;
+  ): N.JSXSpreadAttribute & T;
 }
 
 export interface JSXElementBuilder {
-  (
+  <T = {}>(
     openingElement: K.JSXOpeningElementKind,
     closingElement?: K.JSXClosingElementKind | null,
     children?: (K.JSXElementKind | K.JSXExpressionContainerKind | K.JSXFragmentKind | K.JSXTextKind | K.LiteralKind)[]
-  ): N.JSXElement;
-  from(
+  ): N.JSXElement & T;
+  from<T = {}>(
     params: {
       attributes?: (K.JSXAttributeKind | K.JSXSpreadAttributeKind)[],
       children?: (K.JSXElementKind | K.JSXExpressionContainerKind | K.JSXFragmentKind | K.JSXTextKind | K.LiteralKind)[],
@@ -1218,16 +1218,16 @@ export interface JSXElementBuilder {
       openingElement: K.JSXOpeningElementKind,
       selfClosing?: boolean
     }
-  ): N.JSXElement;
+  ): N.JSXElement & T;
 }
 
 export interface JSXOpeningElementBuilder {
-  (
+  <T = {}>(
     name: K.JSXIdentifierKind | K.JSXNamespacedNameKind | K.JSXMemberExpressionKind,
     attributes?: (K.JSXAttributeKind | K.JSXSpreadAttributeKind)[],
     selfClosing?: boolean
-  ): N.JSXOpeningElement;
-  from(
+  ): N.JSXOpeningElement & T;
+  from<T = {}>(
     params: {
       attributes?: (K.JSXAttributeKind | K.JSXSpreadAttributeKind)[],
       comments?: K.CommentKind[] | null,
@@ -1235,29 +1235,29 @@ export interface JSXOpeningElementBuilder {
       name: K.JSXIdentifierKind | K.JSXNamespacedNameKind | K.JSXMemberExpressionKind,
       selfClosing?: boolean
     }
-  ): N.JSXOpeningElement;
+  ): N.JSXOpeningElement & T;
 }
 
 export interface JSXClosingElementBuilder {
-  (
+  <T = {}>(
     name: K.JSXIdentifierKind | K.JSXNamespacedNameKind | K.JSXMemberExpressionKind
-  ): N.JSXClosingElement;
-  from(
+  ): N.JSXClosingElement & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       name: K.JSXIdentifierKind | K.JSXNamespacedNameKind | K.JSXMemberExpressionKind
     }
-  ): N.JSXClosingElement;
+  ): N.JSXClosingElement & T;
 }
 
 export interface JSXFragmentBuilder {
-  (
+  <T = {}>(
     openingElement: K.JSXOpeningFragmentKind,
     closingElement: K.JSXClosingFragmentKind,
     children?: (K.JSXElementKind | K.JSXExpressionContainerKind | K.JSXFragmentKind | K.JSXTextKind | K.LiteralKind)[]
-  ): N.JSXFragment;
-  from(
+  ): N.JSXFragment & T;
+  from<T = {}>(
     params: {
       children?: (K.JSXElementKind | K.JSXExpressionContainerKind | K.JSXFragmentKind | K.JSXTextKind | K.LiteralKind)[],
       closingElement: K.JSXClosingFragmentKind,
@@ -1265,12 +1265,12 @@ export interface JSXFragmentBuilder {
       loc?: K.SourceLocationKind | null,
       openingElement: K.JSXOpeningFragmentKind
     }
-  ): N.JSXFragment;
+  ): N.JSXFragment & T;
 }
 
 export interface JSXTextBuilder {
-  (value: string): N.JSXText;
-  from(
+  <T = {}>(value: string): N.JSXText & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -1280,237 +1280,237 @@ export interface JSXTextBuilder {
       } | null,
       value: string
     }
-  ): N.JSXText;
+  ): N.JSXText & T;
 }
 
 export interface JSXOpeningFragmentBuilder {
-  (): N.JSXOpeningFragment;
-  from(
+  <T = {}>(): N.JSXOpeningFragment & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.JSXOpeningFragment;
+  ): N.JSXOpeningFragment & T;
 }
 
 export interface JSXClosingFragmentBuilder {
-  (): N.JSXClosingFragment;
-  from(
+  <T = {}>(): N.JSXClosingFragment & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.JSXClosingFragment;
+  ): N.JSXClosingFragment & T;
 }
 
 export interface JSXEmptyExpressionBuilder {
-  (): N.JSXEmptyExpression;
-  from(
+  <T = {}>(): N.JSXEmptyExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.JSXEmptyExpression;
+  ): N.JSXEmptyExpression & T;
 }
 
 export interface JSXSpreadChildBuilder {
-  (expression: K.ExpressionKind): N.JSXSpreadChild;
-  from(
+  <T = {}>(expression: K.ExpressionKind): N.JSXSpreadChild & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expression: K.ExpressionKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.JSXSpreadChild;
+  ): N.JSXSpreadChild & T;
 }
 
 export interface AnyTypeAnnotationBuilder {
-  (): N.AnyTypeAnnotation;
-  from(
+  <T = {}>(): N.AnyTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.AnyTypeAnnotation;
+  ): N.AnyTypeAnnotation & T;
 }
 
 export interface EmptyTypeAnnotationBuilder {
-  (): N.EmptyTypeAnnotation;
-  from(
+  <T = {}>(): N.EmptyTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.EmptyTypeAnnotation;
+  ): N.EmptyTypeAnnotation & T;
 }
 
 export interface MixedTypeAnnotationBuilder {
-  (): N.MixedTypeAnnotation;
-  from(
+  <T = {}>(): N.MixedTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.MixedTypeAnnotation;
+  ): N.MixedTypeAnnotation & T;
 }
 
 export interface VoidTypeAnnotationBuilder {
-  (): N.VoidTypeAnnotation;
-  from(
+  <T = {}>(): N.VoidTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.VoidTypeAnnotation;
+  ): N.VoidTypeAnnotation & T;
 }
 
 export interface NumberTypeAnnotationBuilder {
-  (): N.NumberTypeAnnotation;
-  from(
+  <T = {}>(): N.NumberTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.NumberTypeAnnotation;
+  ): N.NumberTypeAnnotation & T;
 }
 
 export interface NumberLiteralTypeAnnotationBuilder {
-  (value: number, raw: string): N.NumberLiteralTypeAnnotation;
-  from(
+  <T = {}>(value: number, raw: string): N.NumberLiteralTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       raw: string,
       value: number
     }
-  ): N.NumberLiteralTypeAnnotation;
+  ): N.NumberLiteralTypeAnnotation & T;
 }
 
 export interface NumericLiteralTypeAnnotationBuilder {
-  (value: number, raw: string): N.NumericLiteralTypeAnnotation;
-  from(
+  <T = {}>(value: number, raw: string): N.NumericLiteralTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       raw: string,
       value: number
     }
-  ): N.NumericLiteralTypeAnnotation;
+  ): N.NumericLiteralTypeAnnotation & T;
 }
 
 export interface StringTypeAnnotationBuilder {
-  (): N.StringTypeAnnotation;
-  from(
+  <T = {}>(): N.StringTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.StringTypeAnnotation;
+  ): N.StringTypeAnnotation & T;
 }
 
 export interface StringLiteralTypeAnnotationBuilder {
-  (value: string, raw: string): N.StringLiteralTypeAnnotation;
-  from(
+  <T = {}>(value: string, raw: string): N.StringLiteralTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       raw: string,
       value: string
     }
-  ): N.StringLiteralTypeAnnotation;
+  ): N.StringLiteralTypeAnnotation & T;
 }
 
 export interface BooleanTypeAnnotationBuilder {
-  (): N.BooleanTypeAnnotation;
-  from(
+  <T = {}>(): N.BooleanTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.BooleanTypeAnnotation;
+  ): N.BooleanTypeAnnotation & T;
 }
 
 export interface BooleanLiteralTypeAnnotationBuilder {
-  (value: boolean, raw: string): N.BooleanLiteralTypeAnnotation;
-  from(
+  <T = {}>(value: boolean, raw: string): N.BooleanLiteralTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       raw: string,
       value: boolean
     }
-  ): N.BooleanLiteralTypeAnnotation;
+  ): N.BooleanLiteralTypeAnnotation & T;
 }
 
 export interface NullableTypeAnnotationBuilder {
-  (typeAnnotation: K.FlowTypeKind): N.NullableTypeAnnotation;
-  from(
+  <T = {}>(typeAnnotation: K.FlowTypeKind): N.NullableTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       typeAnnotation: K.FlowTypeKind
     }
-  ): N.NullableTypeAnnotation;
+  ): N.NullableTypeAnnotation & T;
 }
 
 export interface NullLiteralTypeAnnotationBuilder {
-  (): N.NullLiteralTypeAnnotation;
-  from(
+  <T = {}>(): N.NullLiteralTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.NullLiteralTypeAnnotation;
+  ): N.NullLiteralTypeAnnotation & T;
 }
 
 export interface NullTypeAnnotationBuilder {
-  (): N.NullTypeAnnotation;
-  from(
+  <T = {}>(): N.NullTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.NullTypeAnnotation;
+  ): N.NullTypeAnnotation & T;
 }
 
 export interface ThisTypeAnnotationBuilder {
-  (): N.ThisTypeAnnotation;
-  from(
+  <T = {}>(): N.ThisTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ThisTypeAnnotation;
+  ): N.ThisTypeAnnotation & T;
 }
 
 export interface ExistsTypeAnnotationBuilder {
-  (): N.ExistsTypeAnnotation;
-  from(
+  <T = {}>(): N.ExistsTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ExistsTypeAnnotation;
+  ): N.ExistsTypeAnnotation & T;
 }
 
 export interface ExistentialTypeParamBuilder {
-  (): N.ExistentialTypeParam;
-  from(
+  <T = {}>(): N.ExistentialTypeParam & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ExistentialTypeParam;
+  ): N.ExistentialTypeParam & T;
 }
 
 export interface FunctionTypeAnnotationBuilder {
-  (
+  <T = {}>(
     params: K.FunctionTypeParamKind[],
     returnType: K.FlowTypeKind,
     rest: K.FunctionTypeParamKind | null,
     typeParameters: K.TypeParameterDeclarationKind | null
-  ): N.FunctionTypeAnnotation;
-  from(
+  ): N.FunctionTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -1519,12 +1519,12 @@ export interface FunctionTypeAnnotationBuilder {
       returnType: K.FlowTypeKind,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.FunctionTypeAnnotation;
+  ): N.FunctionTypeAnnotation & T;
 }
 
 export interface FunctionTypeParamBuilder {
-  (name: K.IdentifierKind, typeAnnotation: K.FlowTypeKind, optional: boolean): N.FunctionTypeParam;
-  from(
+  <T = {}>(name: K.IdentifierKind, typeAnnotation: K.FlowTypeKind, optional: boolean): N.FunctionTypeParam & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -1532,38 +1532,38 @@ export interface FunctionTypeParamBuilder {
       optional: boolean,
       typeAnnotation: K.FlowTypeKind
     }
-  ): N.FunctionTypeParam;
+  ): N.FunctionTypeParam & T;
 }
 
 export interface TypeParameterDeclarationBuilder {
-  (params: K.TypeParameterKind[]): N.TypeParameterDeclaration;
-  from(
+  <T = {}>(params: K.TypeParameterKind[]): N.TypeParameterDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       params: K.TypeParameterKind[]
     }
-  ): N.TypeParameterDeclaration;
+  ): N.TypeParameterDeclaration & T;
 }
 
 export interface ArrayTypeAnnotationBuilder {
-  (elementType: K.FlowTypeKind): N.ArrayTypeAnnotation;
-  from(
+  <T = {}>(elementType: K.FlowTypeKind): N.ArrayTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       elementType: K.FlowTypeKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ArrayTypeAnnotation;
+  ): N.ArrayTypeAnnotation & T;
 }
 
 export interface ObjectTypeAnnotationBuilder {
-  (
+  <T = {}>(
     properties: (K.ObjectTypePropertyKind | K.ObjectTypeSpreadPropertyKind)[],
     indexers?: K.ObjectTypeIndexerKind[],
     callProperties?: K.ObjectTypeCallPropertyKind[]
-  ): N.ObjectTypeAnnotation;
-  from(
+  ): N.ObjectTypeAnnotation & T;
+  from<T = {}>(
     params: {
       callProperties?: K.ObjectTypeCallPropertyKind[],
       comments?: K.CommentKind[] | null,
@@ -1572,16 +1572,16 @@ export interface ObjectTypeAnnotationBuilder {
       loc?: K.SourceLocationKind | null,
       properties: (K.ObjectTypePropertyKind | K.ObjectTypeSpreadPropertyKind)[]
     }
-  ): N.ObjectTypeAnnotation;
+  ): N.ObjectTypeAnnotation & T;
 }
 
 export interface ObjectTypePropertyBuilder {
-  (
+  <T = {}>(
     key: K.LiteralKind | K.IdentifierKind,
     value: K.FlowTypeKind,
     optional: boolean
-  ): N.ObjectTypeProperty;
-  from(
+  ): N.ObjectTypeProperty & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       key: K.LiteralKind | K.IdentifierKind,
@@ -1590,23 +1590,23 @@ export interface ObjectTypePropertyBuilder {
       value: K.FlowTypeKind,
       variance?: K.VarianceKind | "plus" | "minus" | null
     }
-  ): N.ObjectTypeProperty;
+  ): N.ObjectTypeProperty & T;
 }
 
 export interface ObjectTypeSpreadPropertyBuilder {
-  (argument: K.FlowTypeKind): N.ObjectTypeSpreadProperty;
-  from(
+  <T = {}>(argument: K.FlowTypeKind): N.ObjectTypeSpreadProperty & T;
+  from<T = {}>(
     params: {
       argument: K.FlowTypeKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ObjectTypeSpreadProperty;
+  ): N.ObjectTypeSpreadProperty & T;
 }
 
 export interface ObjectTypeIndexerBuilder {
-  (id: K.IdentifierKind, key: K.FlowTypeKind, value: K.FlowTypeKind): N.ObjectTypeIndexer;
-  from(
+  <T = {}>(id: K.IdentifierKind, key: K.FlowTypeKind, value: K.FlowTypeKind): N.ObjectTypeIndexer & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind,
@@ -1615,128 +1615,128 @@ export interface ObjectTypeIndexerBuilder {
       value: K.FlowTypeKind,
       variance?: K.VarianceKind | "plus" | "minus" | null
     }
-  ): N.ObjectTypeIndexer;
+  ): N.ObjectTypeIndexer & T;
 }
 
 export interface ObjectTypeCallPropertyBuilder {
-  (value: K.FunctionTypeAnnotationKind): N.ObjectTypeCallProperty;
-  from(
+  <T = {}>(value: K.FunctionTypeAnnotationKind): N.ObjectTypeCallProperty & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       static?: boolean,
       value: K.FunctionTypeAnnotationKind
     }
-  ): N.ObjectTypeCallProperty;
+  ): N.ObjectTypeCallProperty & T;
 }
 
 export interface VarianceBuilder {
-  (kind: "plus" | "minus"): N.Variance;
-  from(
+  <T = {}>(kind: "plus" | "minus"): N.Variance & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       kind: "plus" | "minus",
       loc?: K.SourceLocationKind | null
     }
-  ): N.Variance;
+  ): N.Variance & T;
 }
 
 export interface QualifiedTypeIdentifierBuilder {
-  (
+  <T = {}>(
     qualification: K.IdentifierKind | K.QualifiedTypeIdentifierKind,
     id: K.IdentifierKind
-  ): N.QualifiedTypeIdentifier;
-  from(
+  ): N.QualifiedTypeIdentifier & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind,
       loc?: K.SourceLocationKind | null,
       qualification: K.IdentifierKind | K.QualifiedTypeIdentifierKind
     }
-  ): N.QualifiedTypeIdentifier;
+  ): N.QualifiedTypeIdentifier & T;
 }
 
 export interface GenericTypeAnnotationBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind | K.QualifiedTypeIdentifierKind,
     typeParameters: K.TypeParameterInstantiationKind | null
-  ): N.GenericTypeAnnotation;
-  from(
+  ): N.GenericTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind | K.QualifiedTypeIdentifierKind,
       loc?: K.SourceLocationKind | null,
       typeParameters?: K.TypeParameterInstantiationKind | null
     }
-  ): N.GenericTypeAnnotation;
+  ): N.GenericTypeAnnotation & T;
 }
 
 export interface TypeParameterInstantiationBuilder {
-  (params: K.FlowTypeKind[]): N.TypeParameterInstantiation;
-  from(
+  <T = {}>(params: K.FlowTypeKind[]): N.TypeParameterInstantiation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       params: K.FlowTypeKind[]
     }
-  ): N.TypeParameterInstantiation;
+  ): N.TypeParameterInstantiation & T;
 }
 
 export interface MemberTypeAnnotationBuilder {
-  (
+  <T = {}>(
     object: K.IdentifierKind,
     property: K.MemberTypeAnnotationKind | K.GenericTypeAnnotationKind
-  ): N.MemberTypeAnnotation;
-  from(
+  ): N.MemberTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       object: K.IdentifierKind,
       property: K.MemberTypeAnnotationKind | K.GenericTypeAnnotationKind
     }
-  ): N.MemberTypeAnnotation;
+  ): N.MemberTypeAnnotation & T;
 }
 
 export interface UnionTypeAnnotationBuilder {
-  (types: K.FlowTypeKind[]): N.UnionTypeAnnotation;
-  from(
+  <T = {}>(types: K.FlowTypeKind[]): N.UnionTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       types: K.FlowTypeKind[]
     }
-  ): N.UnionTypeAnnotation;
+  ): N.UnionTypeAnnotation & T;
 }
 
 export interface IntersectionTypeAnnotationBuilder {
-  (types: K.FlowTypeKind[]): N.IntersectionTypeAnnotation;
-  from(
+  <T = {}>(types: K.FlowTypeKind[]): N.IntersectionTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       types: K.FlowTypeKind[]
     }
-  ): N.IntersectionTypeAnnotation;
+  ): N.IntersectionTypeAnnotation & T;
 }
 
 export interface TypeofTypeAnnotationBuilder {
-  (argument: K.FlowTypeKind): N.TypeofTypeAnnotation;
-  from(
+  <T = {}>(argument: K.FlowTypeKind): N.TypeofTypeAnnotation & T;
+  from<T = {}>(
     params: {
       argument: K.FlowTypeKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TypeofTypeAnnotation;
+  ): N.TypeofTypeAnnotation & T;
 }
 
 export interface TypeParameterBuilder {
-  (
+  <T = {}>(
     name: string,
     variance?: K.VarianceKind | "plus" | "minus" | null,
     bound?: K.TypeAnnotationKind | null
-  ): N.TypeParameter;
-  from(
+  ): N.TypeParameter & T;
+  from<T = {}>(
     params: {
       bound?: K.TypeAnnotationKind | null,
       comments?: K.CommentKind[] | null,
@@ -1744,12 +1744,12 @@ export interface TypeParameterBuilder {
       name: string,
       variance?: K.VarianceKind | "plus" | "minus" | null
     }
-  ): N.TypeParameter;
+  ): N.TypeParameter & T;
 }
 
 export interface ClassImplementsBuilder {
-  (id: K.IdentifierKind): N.ClassImplements;
-  from(
+  <T = {}>(id: K.IdentifierKind): N.ClassImplements & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind,
@@ -1757,16 +1757,16 @@ export interface ClassImplementsBuilder {
       superClass?: K.ExpressionKind | null,
       typeParameters?: K.TypeParameterInstantiationKind | null
     }
-  ): N.ClassImplements;
+  ): N.ClassImplements & T;
 }
 
 export interface InterfaceDeclarationBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind,
     body: K.ObjectTypeAnnotationKind,
     extendsParam: K.InterfaceExtendsKind[]
-  ): N.InterfaceDeclaration;
-  from(
+  ): N.InterfaceDeclaration & T;
+  from<T = {}>(
     params: {
       body: K.ObjectTypeAnnotationKind,
       comments?: K.CommentKind[] | null,
@@ -1775,28 +1775,28 @@ export interface InterfaceDeclarationBuilder {
       loc?: K.SourceLocationKind | null,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.InterfaceDeclaration;
+  ): N.InterfaceDeclaration & T;
 }
 
 export interface InterfaceExtendsBuilder {
-  (id: K.IdentifierKind): N.InterfaceExtends;
-  from(
+  <T = {}>(id: K.IdentifierKind): N.InterfaceExtends & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind,
       loc?: K.SourceLocationKind | null,
       typeParameters?: K.TypeParameterInstantiationKind | null
     }
-  ): N.InterfaceExtends;
+  ): N.InterfaceExtends & T;
 }
 
 export interface DeclareInterfaceBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind,
     body: K.ObjectTypeAnnotationKind,
     extendsParam: K.InterfaceExtendsKind[]
-  ): N.DeclareInterface;
-  from(
+  ): N.DeclareInterface & T;
+  from<T = {}>(
     params: {
       body: K.ObjectTypeAnnotationKind,
       comments?: K.CommentKind[] | null,
@@ -1805,16 +1805,16 @@ export interface DeclareInterfaceBuilder {
       loc?: K.SourceLocationKind | null,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.DeclareInterface;
+  ): N.DeclareInterface & T;
 }
 
 export interface TypeAliasBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind,
     typeParameters: K.TypeParameterDeclarationKind | null,
     right: K.FlowTypeKind
-  ): N.TypeAlias;
-  from(
+  ): N.TypeAlias & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind,
@@ -1822,15 +1822,15 @@ export interface TypeAliasBuilder {
       right: K.FlowTypeKind,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.TypeAlias;
+  ): N.TypeAlias & T;
 }
 
 export interface OpaqueTypeBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind,
     typeParameters: K.TypeParameterDeclarationKind | null
-  ): N.OpaqueType;
-  from(
+  ): N.OpaqueType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind,
@@ -1839,16 +1839,16 @@ export interface OpaqueTypeBuilder {
       superType: K.FlowTypeKind,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.OpaqueType;
+  ): N.OpaqueType & T;
 }
 
 export interface DeclareTypeAliasBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind,
     typeParameters: K.TypeParameterDeclarationKind | null,
     right: K.FlowTypeKind
-  ): N.DeclareTypeAlias;
-  from(
+  ): N.DeclareTypeAlias & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind,
@@ -1856,15 +1856,15 @@ export interface DeclareTypeAliasBuilder {
       right: K.FlowTypeKind,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.DeclareTypeAlias;
+  ): N.DeclareTypeAlias & T;
 }
 
 export interface DeclareOpaqueTypeBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind,
     typeParameters: K.TypeParameterDeclarationKind | null
-  ): N.DeclareOpaqueType;
-  from(
+  ): N.DeclareOpaqueType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind,
@@ -1872,57 +1872,57 @@ export interface DeclareOpaqueTypeBuilder {
       right: K.FlowTypeKind,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.DeclareOpaqueType;
+  ): N.DeclareOpaqueType & T;
 }
 
 export interface TypeCastExpressionBuilder {
-  (expression: K.ExpressionKind, typeAnnotation: K.TypeAnnotationKind): N.TypeCastExpression;
-  from(
+  <T = {}>(expression: K.ExpressionKind, typeAnnotation: K.TypeAnnotationKind): N.TypeCastExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expression: K.ExpressionKind,
       loc?: K.SourceLocationKind | null,
       typeAnnotation: K.TypeAnnotationKind
     }
-  ): N.TypeCastExpression;
+  ): N.TypeCastExpression & T;
 }
 
 export interface TupleTypeAnnotationBuilder {
-  (types: K.FlowTypeKind[]): N.TupleTypeAnnotation;
-  from(
+  <T = {}>(types: K.FlowTypeKind[]): N.TupleTypeAnnotation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       types: K.FlowTypeKind[]
     }
-  ): N.TupleTypeAnnotation;
+  ): N.TupleTypeAnnotation & T;
 }
 
 export interface DeclareVariableBuilder {
-  (id: K.IdentifierKind): N.DeclareVariable;
-  from(
+  <T = {}>(id: K.IdentifierKind): N.DeclareVariable & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.DeclareVariable;
+  ): N.DeclareVariable & T;
 }
 
 export interface DeclareFunctionBuilder {
-  (id: K.IdentifierKind): N.DeclareFunction;
-  from(
+  <T = {}>(id: K.IdentifierKind): N.DeclareFunction & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.DeclareFunction;
+  ): N.DeclareFunction & T;
 }
 
 export interface DeclareClassBuilder {
-  (id: K.IdentifierKind): N.DeclareClass;
-  from(
+  <T = {}>(id: K.IdentifierKind): N.DeclareClass & T;
+  from<T = {}>(
     params: {
       body: K.ObjectTypeAnnotationKind,
       comments?: K.CommentKind[] | null,
@@ -1931,40 +1931,40 @@ export interface DeclareClassBuilder {
       loc?: K.SourceLocationKind | null,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.DeclareClass;
+  ): N.DeclareClass & T;
 }
 
 export interface DeclareModuleBuilder {
-  (id: K.IdentifierKind | K.LiteralKind, body: K.BlockStatementKind): N.DeclareModule;
-  from(
+  <T = {}>(id: K.IdentifierKind | K.LiteralKind, body: K.BlockStatementKind): N.DeclareModule & T;
+  from<T = {}>(
     params: {
       body: K.BlockStatementKind,
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind | K.LiteralKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.DeclareModule;
+  ): N.DeclareModule & T;
 }
 
 export interface DeclareModuleExportsBuilder {
-  (typeAnnotation: K.TypeAnnotationKind): N.DeclareModuleExports;
-  from(
+  <T = {}>(typeAnnotation: K.TypeAnnotationKind): N.DeclareModuleExports & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       typeAnnotation: K.TypeAnnotationKind
     }
-  ): N.DeclareModuleExports;
+  ): N.DeclareModuleExports & T;
 }
 
 export interface DeclareExportDeclarationBuilder {
-  (
+  <T = {}>(
     defaultParam: boolean,
     declaration: K.DeclareVariableKind | K.DeclareFunctionKind | K.DeclareClassKind | K.FlowTypeKind | null,
     specifiers?: (K.ExportSpecifierKind | K.ExportBatchSpecifierKind)[],
     source?: K.LiteralKind | null
-  ): N.DeclareExportDeclaration;
-  from(
+  ): N.DeclareExportDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       declaration?: K.DeclareVariableKind | K.DeclareFunctionKind | K.DeclareClassKind | K.FlowTypeKind | null,
@@ -1973,12 +1973,12 @@ export interface DeclareExportDeclarationBuilder {
       source?: K.LiteralKind | null,
       specifiers?: (K.ExportSpecifierKind | K.ExportBatchSpecifierKind)[]
     }
-  ): N.DeclareExportDeclaration;
+  ): N.DeclareExportDeclaration & T;
 }
 
 export interface ExportSpecifierBuilder {
-  (local: K.IdentifierKind | null | undefined, exported: K.IdentifierKind): N.ExportSpecifier;
-  from(
+  <T = {}>(local: K.IdentifierKind | null | undefined, exported: K.IdentifierKind): N.ExportSpecifier & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       exported: K.IdentifierKind,
@@ -1987,59 +1987,59 @@ export interface ExportSpecifierBuilder {
       local?: K.IdentifierKind | null,
       name?: K.IdentifierKind | null
     }
-  ): N.ExportSpecifier;
+  ): N.ExportSpecifier & T;
 }
 
 export interface ExportBatchSpecifierBuilder {
-  (): N.ExportBatchSpecifier;
-  from(
+  <T = {}>(): N.ExportBatchSpecifier & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ExportBatchSpecifier;
+  ): N.ExportBatchSpecifier & T;
 }
 
 export interface DeclareExportAllDeclarationBuilder {
-  (source?: K.LiteralKind | null): N.DeclareExportAllDeclaration;
-  from(
+  <T = {}>(source?: K.LiteralKind | null): N.DeclareExportAllDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       source?: K.LiteralKind | null
     }
-  ): N.DeclareExportAllDeclaration;
+  ): N.DeclareExportAllDeclaration & T;
 }
 
 export interface InferredPredicateBuilder {
-  (): N.InferredPredicate;
-  from(
+  <T = {}>(): N.InferredPredicate & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.InferredPredicate;
+  ): N.InferredPredicate & T;
 }
 
 export interface DeclaredPredicateBuilder {
-  (value: K.ExpressionKind): N.DeclaredPredicate;
-  from(
+  <T = {}>(value: K.ExpressionKind): N.DeclaredPredicate & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       value: K.ExpressionKind
     }
-  ): N.DeclaredPredicate;
+  ): N.DeclaredPredicate & T;
 }
 
 export interface ExportDeclarationBuilder {
-  (
+  <T = {}>(
     defaultParam: boolean,
     declaration: K.DeclarationKind | K.ExpressionKind | null,
     specifiers?: (K.ExportSpecifierKind | K.ExportBatchSpecifierKind)[],
     source?: K.LiteralKind | null
-  ): N.ExportDeclaration;
-  from(
+  ): N.ExportDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       declaration?: K.DeclarationKind | K.ExpressionKind | null,
@@ -2048,128 +2048,128 @@ export interface ExportDeclarationBuilder {
       source?: K.LiteralKind | null,
       specifiers?: (K.ExportSpecifierKind | K.ExportBatchSpecifierKind)[]
     }
-  ): N.ExportDeclaration;
+  ): N.ExportDeclaration & T;
 }
 
 export interface BlockBuilder {
-  (value: string, leading?: boolean, trailing?: boolean): N.Block;
-  from(
+  <T = {}>(value: string, leading?: boolean, trailing?: boolean): N.Block & T;
+  from<T = {}>(
     params: {
       leading?: boolean,
       loc?: K.SourceLocationKind | null,
       trailing?: boolean,
       value: string
     }
-  ): N.Block;
+  ): N.Block & T;
 }
 
 export interface LineBuilder {
-  (value: string, leading?: boolean, trailing?: boolean): N.Line;
-  from(
+  <T = {}>(value: string, leading?: boolean, trailing?: boolean): N.Line & T;
+  from<T = {}>(
     params: {
       leading?: boolean,
       loc?: K.SourceLocationKind | null,
       trailing?: boolean,
       value: string
     }
-  ): N.Line;
+  ): N.Line & T;
 }
 
 export interface NoopBuilder {
-  (): N.Noop;
-  from(
+  <T = {}>(): N.Noop & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.Noop;
+  ): N.Noop & T;
 }
 
 export interface DoExpressionBuilder {
-  (body: K.StatementKind[]): N.DoExpression;
-  from(
+  <T = {}>(body: K.StatementKind[]): N.DoExpression & T;
+  from<T = {}>(
     params: {
       body: K.StatementKind[],
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.DoExpression;
+  ): N.DoExpression & T;
 }
 
 export interface SuperBuilder {
-  (): N.Super;
-  from(
+  <T = {}>(): N.Super & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.Super;
+  ): N.Super & T;
 }
 
 export interface BindExpressionBuilder {
-  (object: K.ExpressionKind | null, callee: K.ExpressionKind): N.BindExpression;
-  from(
+  <T = {}>(object: K.ExpressionKind | null, callee: K.ExpressionKind): N.BindExpression & T;
+  from<T = {}>(
     params: {
       callee: K.ExpressionKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       object?: K.ExpressionKind | null
     }
-  ): N.BindExpression;
+  ): N.BindExpression & T;
 }
 
 export interface DecoratorBuilder {
-  (expression: K.ExpressionKind): N.Decorator;
-  from(
+  <T = {}>(expression: K.ExpressionKind): N.Decorator & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expression: K.ExpressionKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.Decorator;
+  ): N.Decorator & T;
 }
 
 export interface MetaPropertyBuilder {
-  (meta: K.IdentifierKind, property: K.IdentifierKind): N.MetaProperty;
-  from(
+  <T = {}>(meta: K.IdentifierKind, property: K.IdentifierKind): N.MetaProperty & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       meta: K.IdentifierKind,
       property: K.IdentifierKind
     }
-  ): N.MetaProperty;
+  ): N.MetaProperty & T;
 }
 
 export interface ParenthesizedExpressionBuilder {
-  (expression: K.ExpressionKind): N.ParenthesizedExpression;
-  from(
+  <T = {}>(expression: K.ExpressionKind): N.ParenthesizedExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expression: K.ExpressionKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ParenthesizedExpression;
+  ): N.ParenthesizedExpression & T;
 }
 
 export interface ExportDefaultDeclarationBuilder {
-  (declaration: K.DeclarationKind | K.ExpressionKind): N.ExportDefaultDeclaration;
-  from(
+  <T = {}>(declaration: K.DeclarationKind | K.ExpressionKind): N.ExportDefaultDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       declaration: K.DeclarationKind | K.ExpressionKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ExportDefaultDeclaration;
+  ): N.ExportDefaultDeclaration & T;
 }
 
 export interface ExportNamedDeclarationBuilder {
-  (
+  <T = {}>(
     declaration: K.DeclarationKind | null,
     specifiers?: K.ExportSpecifierKind[],
     source?: K.LiteralKind | null
-  ): N.ExportNamedDeclaration;
-  from(
+  ): N.ExportNamedDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       declaration?: K.DeclarationKind | null,
@@ -2177,92 +2177,92 @@ export interface ExportNamedDeclarationBuilder {
       source?: K.LiteralKind | null,
       specifiers?: K.ExportSpecifierKind[]
     }
-  ): N.ExportNamedDeclaration;
+  ): N.ExportNamedDeclaration & T;
 }
 
 export interface ExportNamespaceSpecifierBuilder {
-  (exported: K.IdentifierKind): N.ExportNamespaceSpecifier;
-  from(
+  <T = {}>(exported: K.IdentifierKind): N.ExportNamespaceSpecifier & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       exported: K.IdentifierKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ExportNamespaceSpecifier;
+  ): N.ExportNamespaceSpecifier & T;
 }
 
 export interface ExportDefaultSpecifierBuilder {
-  (exported: K.IdentifierKind): N.ExportDefaultSpecifier;
-  from(
+  <T = {}>(exported: K.IdentifierKind): N.ExportDefaultSpecifier & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       exported: K.IdentifierKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.ExportDefaultSpecifier;
+  ): N.ExportDefaultSpecifier & T;
 }
 
 export interface ExportAllDeclarationBuilder {
-  (exported: K.IdentifierKind | null, source: K.LiteralKind): N.ExportAllDeclaration;
-  from(
+  <T = {}>(exported: K.IdentifierKind | null, source: K.LiteralKind): N.ExportAllDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       exported?: K.IdentifierKind | null,
       loc?: K.SourceLocationKind | null,
       source: K.LiteralKind
     }
-  ): N.ExportAllDeclaration;
+  ): N.ExportAllDeclaration & T;
 }
 
 export interface CommentBlockBuilder {
-  (value: string, leading?: boolean, trailing?: boolean): N.CommentBlock;
-  from(
+  <T = {}>(value: string, leading?: boolean, trailing?: boolean): N.CommentBlock & T;
+  from<T = {}>(
     params: {
       leading?: boolean,
       loc?: K.SourceLocationKind | null,
       trailing?: boolean,
       value: string
     }
-  ): N.CommentBlock;
+  ): N.CommentBlock & T;
 }
 
 export interface CommentLineBuilder {
-  (value: string, leading?: boolean, trailing?: boolean): N.CommentLine;
-  from(
+  <T = {}>(value: string, leading?: boolean, trailing?: boolean): N.CommentLine & T;
+  from<T = {}>(
     params: {
       leading?: boolean,
       loc?: K.SourceLocationKind | null,
       trailing?: boolean,
       value: string
     }
-  ): N.CommentLine;
+  ): N.CommentLine & T;
 }
 
 export interface DirectiveBuilder {
-  (value: K.DirectiveLiteralKind): N.Directive;
-  from(
+  <T = {}>(value: K.DirectiveLiteralKind): N.Directive & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       value: K.DirectiveLiteralKind
     }
-  ): N.Directive;
+  ): N.Directive & T;
 }
 
 export interface DirectiveLiteralBuilder {
-  (value: string): N.DirectiveLiteral;
-  from(
+  <T = {}>(value: string): N.DirectiveLiteral & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       value: string
     }
-  ): N.DirectiveLiteral;
+  ): N.DirectiveLiteral & T;
 }
 
 export interface StringLiteralBuilder {
-  (value: string): N.StringLiteral;
-  from(
+  <T = {}>(value: string): N.StringLiteral & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -2272,12 +2272,12 @@ export interface StringLiteralBuilder {
       } | null,
       value: string
     }
-  ): N.StringLiteral;
+  ): N.StringLiteral & T;
 }
 
 export interface NumericLiteralBuilder {
-  (value: number): N.NumericLiteral;
-  from(
+  <T = {}>(value: number): N.NumericLiteral & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       extra?: {
@@ -2292,12 +2292,12 @@ export interface NumericLiteralBuilder {
       } | null,
       value: number
     }
-  ): N.NumericLiteral;
+  ): N.NumericLiteral & T;
 }
 
 export interface BigIntLiteralBuilder {
-  (value: string | number): N.BigIntLiteral;
-  from(
+  <T = {}>(value: string | number): N.BigIntLiteral & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       extra?: {
@@ -2311,12 +2311,12 @@ export interface BigIntLiteralBuilder {
       } | null,
       value: string | number
     }
-  ): N.BigIntLiteral;
+  ): N.BigIntLiteral & T;
 }
 
 export interface NullLiteralBuilder {
-  (): N.NullLiteral;
-  from(
+  <T = {}>(): N.NullLiteral & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -2326,12 +2326,12 @@ export interface NullLiteralBuilder {
       } | null,
       value?: null
     }
-  ): N.NullLiteral;
+  ): N.NullLiteral & T;
 }
 
 export interface BooleanLiteralBuilder {
-  (value: boolean): N.BooleanLiteral;
-  from(
+  <T = {}>(value: boolean): N.BooleanLiteral & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -2341,12 +2341,12 @@ export interface BooleanLiteralBuilder {
       } | null,
       value: boolean
     }
-  ): N.BooleanLiteral;
+  ): N.BooleanLiteral & T;
 }
 
 export interface RegExpLiteralBuilder {
-  (pattern: string, flags: string): N.RegExpLiteral;
-  from(
+  <T = {}>(pattern: string, flags: string): N.RegExpLiteral & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       flags: string,
@@ -2358,18 +2358,18 @@ export interface RegExpLiteralBuilder {
       } | null,
       value?: RegExp
     }
-  ): N.RegExpLiteral;
+  ): N.RegExpLiteral & T;
 }
 
 export interface ObjectMethodBuilder {
-  (
+  <T = {}>(
     kind: "method" | "get" | "set",
     key: K.LiteralKind | K.IdentifierKind | K.ExpressionKind,
     params: K.PatternKind[],
     body: K.BlockStatementKind,
     computed?: boolean
-  ): N.ObjectMethod;
-  from(
+  ): N.ObjectMethod & T;
+  from<T = {}>(
     params: {
       accessibility?: K.LiteralKind | null,
       async?: boolean,
@@ -2389,15 +2389,15 @@ export interface ObjectMethodBuilder {
       returnType?: K.TypeAnnotationKind | null,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.ObjectMethod;
+  ): N.ObjectMethod & T;
 }
 
 export interface ObjectPropertyBuilder {
-  (
+  <T = {}>(
     key: K.LiteralKind | K.IdentifierKind | K.ExpressionKind,
     value: K.ExpressionKind | K.PatternKind
-  ): N.ObjectProperty;
-  from(
+  ): N.ObjectProperty & T;
+  from<T = {}>(
     params: {
       accessibility?: K.LiteralKind | null,
       comments?: K.CommentKind[] | null,
@@ -2406,19 +2406,19 @@ export interface ObjectPropertyBuilder {
       loc?: K.SourceLocationKind | null,
       value: K.ExpressionKind | K.PatternKind
     }
-  ): N.ObjectProperty;
+  ): N.ObjectProperty & T;
 }
 
 export interface ClassMethodBuilder {
-  (
+  <T = {}>(
     kind: "get" | "set" | "method" | "constructor",
     key: K.LiteralKind | K.IdentifierKind | K.ExpressionKind,
     params: K.PatternKind[],
     body: K.BlockStatementKind,
     computed?: boolean,
     staticParam?: boolean
-  ): N.ClassMethod;
-  from(
+  ): N.ClassMethod & T;
+  from<T = {}>(
     params: {
       async?: boolean,
       body: K.BlockStatementKind,
@@ -2438,27 +2438,27 @@ export interface ClassMethodBuilder {
       static?: boolean,
       typeParameters?: K.TypeParameterDeclarationKind | null
     }
-  ): N.ClassMethod;
+  ): N.ClassMethod & T;
 }
 
 export interface RestPropertyBuilder {
-  (argument: K.ExpressionKind): N.RestProperty;
-  from(
+  <T = {}>(argument: K.ExpressionKind): N.RestProperty & T;
+  from<T = {}>(
     params: {
       argument: K.ExpressionKind,
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.RestProperty;
+  ): N.RestProperty & T;
 }
 
 export interface ForAwaitStatementBuilder {
-  (
+  <T = {}>(
     left: K.VariableDeclarationKind | K.ExpressionKind,
     right: K.ExpressionKind,
     body: K.StatementKind
-  ): N.ForAwaitStatement;
-  from(
+  ): N.ForAwaitStatement & T;
+  from<T = {}>(
     params: {
       body: K.StatementKind,
       comments?: K.CommentKind[] | null,
@@ -2466,74 +2466,74 @@ export interface ForAwaitStatementBuilder {
       loc?: K.SourceLocationKind | null,
       right: K.ExpressionKind
     }
-  ): N.ForAwaitStatement;
+  ): N.ForAwaitStatement & T;
 }
 
 export interface ImportBuilder {
-  (): N.Import;
-  from(
+  <T = {}>(): N.Import & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.Import;
+  ): N.Import & T;
 }
 
 export interface TSQualifiedNameBuilder {
-  (
+  <T = {}>(
     left: K.IdentifierKind | K.TSQualifiedNameKind,
     right: K.IdentifierKind | K.TSQualifiedNameKind
-  ): N.TSQualifiedName;
-  from(
+  ): N.TSQualifiedName & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       left: K.IdentifierKind | K.TSQualifiedNameKind,
       loc?: K.SourceLocationKind | null,
       right: K.IdentifierKind | K.TSQualifiedNameKind
     }
-  ): N.TSQualifiedName;
+  ): N.TSQualifiedName & T;
 }
 
 export interface TSTypeReferenceBuilder {
-  (
+  <T = {}>(
     typeName: K.IdentifierKind | K.TSQualifiedNameKind,
     typeParameters?: K.TSTypeParameterInstantiationKind | null
-  ): N.TSTypeReference;
-  from(
+  ): N.TSTypeReference & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       typeName: K.IdentifierKind | K.TSQualifiedNameKind,
       typeParameters?: K.TSTypeParameterInstantiationKind | null
     }
-  ): N.TSTypeReference;
+  ): N.TSTypeReference & T;
 }
 
 export interface TSTypeParameterInstantiationBuilder {
-  (params: K.TSTypeKind[]): N.TSTypeParameterInstantiation;
-  from(
+  <T = {}>(params: K.TSTypeKind[]): N.TSTypeParameterInstantiation & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       params: K.TSTypeKind[]
     }
-  ): N.TSTypeParameterInstantiation;
+  ): N.TSTypeParameterInstantiation & T;
 }
 
 export interface TSTypeParameterDeclarationBuilder {
-  (params: K.TSTypeParameterKind[]): N.TSTypeParameterDeclaration;
-  from(
+  <T = {}>(params: K.TSTypeParameterKind[]): N.TSTypeParameterDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       params: K.TSTypeParameterKind[]
     }
-  ): N.TSTypeParameterDeclaration;
+  ): N.TSTypeParameterDeclaration & T;
 }
 
 export interface TSAsExpressionBuilder {
-  (expression: K.ExpressionKind): N.TSAsExpression;
-  from(
+  <T = {}>(expression: K.ExpressionKind): N.TSAsExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expression: K.ExpressionKind,
@@ -2543,192 +2543,192 @@ export interface TSAsExpressionBuilder {
       loc?: K.SourceLocationKind | null,
       typeAnnotation: K.TSTypeKind
     }
-  ): N.TSAsExpression;
+  ): N.TSAsExpression & T;
 }
 
 export interface TSNonNullExpressionBuilder {
-  (expression: K.ExpressionKind): N.TSNonNullExpression;
-  from(
+  <T = {}>(expression: K.ExpressionKind): N.TSNonNullExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expression: K.ExpressionKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSNonNullExpression;
+  ): N.TSNonNullExpression & T;
 }
 
 export interface TSAnyKeywordBuilder {
-  (): N.TSAnyKeyword;
-  from(
+  <T = {}>(): N.TSAnyKeyword & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSAnyKeyword;
+  ): N.TSAnyKeyword & T;
 }
 
 export interface TSBooleanKeywordBuilder {
-  (): N.TSBooleanKeyword;
-  from(
+  <T = {}>(): N.TSBooleanKeyword & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSBooleanKeyword;
+  ): N.TSBooleanKeyword & T;
 }
 
 export interface TSNeverKeywordBuilder {
-  (): N.TSNeverKeyword;
-  from(
+  <T = {}>(): N.TSNeverKeyword & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSNeverKeyword;
+  ): N.TSNeverKeyword & T;
 }
 
 export interface TSNullKeywordBuilder {
-  (): N.TSNullKeyword;
-  from(
+  <T = {}>(): N.TSNullKeyword & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSNullKeyword;
+  ): N.TSNullKeyword & T;
 }
 
 export interface TSNumberKeywordBuilder {
-  (): N.TSNumberKeyword;
-  from(
+  <T = {}>(): N.TSNumberKeyword & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSNumberKeyword;
+  ): N.TSNumberKeyword & T;
 }
 
 export interface TSObjectKeywordBuilder {
-  (): N.TSObjectKeyword;
-  from(
+  <T = {}>(): N.TSObjectKeyword & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSObjectKeyword;
+  ): N.TSObjectKeyword & T;
 }
 
 export interface TSStringKeywordBuilder {
-  (): N.TSStringKeyword;
-  from(
+  <T = {}>(): N.TSStringKeyword & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSStringKeyword;
+  ): N.TSStringKeyword & T;
 }
 
 export interface TSSymbolKeywordBuilder {
-  (): N.TSSymbolKeyword;
-  from(
+  <T = {}>(): N.TSSymbolKeyword & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSSymbolKeyword;
+  ): N.TSSymbolKeyword & T;
 }
 
 export interface TSUndefinedKeywordBuilder {
-  (): N.TSUndefinedKeyword;
-  from(
+  <T = {}>(): N.TSUndefinedKeyword & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSUndefinedKeyword;
+  ): N.TSUndefinedKeyword & T;
 }
 
 export interface TSUnknownKeywordBuilder {
-  (): N.TSUnknownKeyword;
-  from(
+  <T = {}>(): N.TSUnknownKeyword & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSUnknownKeyword;
+  ): N.TSUnknownKeyword & T;
 }
 
 export interface TSVoidKeywordBuilder {
-  (): N.TSVoidKeyword;
-  from(
+  <T = {}>(): N.TSVoidKeyword & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSVoidKeyword;
+  ): N.TSVoidKeyword & T;
 }
 
 export interface TSThisTypeBuilder {
-  (): N.TSThisType;
-  from(
+  <T = {}>(): N.TSThisType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSThisType;
+  ): N.TSThisType & T;
 }
 
 export interface TSArrayTypeBuilder {
-  (elementType: K.TSTypeKind): N.TSArrayType;
-  from(
+  <T = {}>(elementType: K.TSTypeKind): N.TSArrayType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       elementType: K.TSTypeKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSArrayType;
+  ): N.TSArrayType & T;
 }
 
 export interface TSLiteralTypeBuilder {
-  (literal: K.NumericLiteralKind | K.StringLiteralKind | K.BooleanLiteralKind): N.TSLiteralType;
-  from(
+  <T = {}>(literal: K.NumericLiteralKind | K.StringLiteralKind | K.BooleanLiteralKind): N.TSLiteralType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       literal: K.NumericLiteralKind | K.StringLiteralKind | K.BooleanLiteralKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSLiteralType;
+  ): N.TSLiteralType & T;
 }
 
 export interface TSUnionTypeBuilder {
-  (types: K.TSTypeKind[]): N.TSUnionType;
-  from(
+  <T = {}>(types: K.TSTypeKind[]): N.TSUnionType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       types: K.TSTypeKind[]
     }
-  ): N.TSUnionType;
+  ): N.TSUnionType & T;
 }
 
 export interface TSIntersectionTypeBuilder {
-  (types: K.TSTypeKind[]): N.TSIntersectionType;
-  from(
+  <T = {}>(types: K.TSTypeKind[]): N.TSIntersectionType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       types: K.TSTypeKind[]
     }
-  ): N.TSIntersectionType;
+  ): N.TSIntersectionType & T;
 }
 
 export interface TSConditionalTypeBuilder {
-  (
+  <T = {}>(
     checkType: K.TSTypeKind,
     extendsType: K.TSTypeKind,
     trueType: K.TSTypeKind,
     falseType: K.TSTypeKind
-  ): N.TSConditionalType;
-  from(
+  ): N.TSConditionalType & T;
+  from<T = {}>(
     params: {
       checkType: K.TSTypeKind,
       comments?: K.CommentKind[] | null,
@@ -2737,27 +2737,27 @@ export interface TSConditionalTypeBuilder {
       loc?: K.SourceLocationKind | null,
       trueType: K.TSTypeKind
     }
-  ): N.TSConditionalType;
+  ): N.TSConditionalType & T;
 }
 
 export interface TSInferTypeBuilder {
-  (typeParameter: K.TSTypeParameterKind): N.TSInferType;
-  from(
+  <T = {}>(typeParameter: K.TSTypeParameterKind): N.TSInferType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       typeParameter: K.TSTypeParameterKind
     }
-  ): N.TSInferType;
+  ): N.TSInferType & T;
 }
 
 export interface TSTypeParameterBuilder {
-  (
+  <T = {}>(
     name: string,
     constraint?: K.TSTypeKind | null,
     defaultParam?: K.TSTypeKind | null
-  ): N.TSTypeParameter;
-  from(
+  ): N.TSTypeParameter & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       constraint?: K.TSTypeKind | null,
@@ -2767,23 +2767,23 @@ export interface TSTypeParameterBuilder {
       optional?: boolean,
       typeAnnotation?: K.TypeAnnotationKind | K.TSTypeAnnotationKind | null
     }
-  ): N.TSTypeParameter;
+  ): N.TSTypeParameter & T;
 }
 
 export interface TSParenthesizedTypeBuilder {
-  (typeAnnotation: K.TSTypeKind): N.TSParenthesizedType;
-  from(
+  <T = {}>(typeAnnotation: K.TSTypeKind): N.TSParenthesizedType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       typeAnnotation: K.TSTypeKind
     }
-  ): N.TSParenthesizedType;
+  ): N.TSParenthesizedType & T;
 }
 
 export interface TSFunctionTypeBuilder {
-  (parameters: (K.IdentifierKind | K.RestElementKind)[]): N.TSFunctionType;
-  from(
+  <T = {}>(parameters: (K.IdentifierKind | K.RestElementKind)[]): N.TSFunctionType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -2791,12 +2791,12 @@ export interface TSFunctionTypeBuilder {
       typeAnnotation?: K.TSTypeAnnotationKind | null,
       typeParameters?: K.TSTypeParameterDeclarationKind | null
     }
-  ): N.TSFunctionType;
+  ): N.TSFunctionType & T;
 }
 
 export interface TSConstructorTypeBuilder {
-  (parameters: (K.IdentifierKind | K.RestElementKind)[]): N.TSConstructorType;
-  from(
+  <T = {}>(parameters: (K.IdentifierKind | K.RestElementKind)[]): N.TSConstructorType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -2804,16 +2804,16 @@ export interface TSConstructorTypeBuilder {
       typeAnnotation?: K.TSTypeAnnotationKind | null,
       typeParameters?: K.TSTypeParameterDeclarationKind | null
     }
-  ): N.TSConstructorType;
+  ): N.TSConstructorType & T;
 }
 
 export interface TSDeclareFunctionBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind | null | undefined,
     params: K.PatternKind[],
     returnType?: K.TSTypeAnnotationKind | K.NoopKind | null
-  ): N.TSDeclareFunction;
-  from(
+  ): N.TSDeclareFunction & T;
+  from<T = {}>(
     params: {
       async?: boolean,
       comments?: K.CommentKind[] | null,
@@ -2825,16 +2825,16 @@ export interface TSDeclareFunctionBuilder {
       returnType?: K.TSTypeAnnotationKind | K.NoopKind | null,
       typeParameters?: K.TSTypeParameterDeclarationKind | null
     }
-  ): N.TSDeclareFunction;
+  ): N.TSDeclareFunction & T;
 }
 
 export interface TSDeclareMethodBuilder {
-  (
+  <T = {}>(
     key: K.IdentifierKind | K.StringLiteralKind | K.NumericLiteralKind | K.ExpressionKind,
     params: K.PatternKind[],
     returnType?: K.TSTypeAnnotationKind | K.NoopKind | null
-  ): N.TSDeclareMethod;
-  from(
+  ): N.TSDeclareMethod & T;
+  from<T = {}>(
     params: {
       abstract?: boolean,
       access?: "public" | "private" | "protected" | "undefined",
@@ -2853,12 +2853,12 @@ export interface TSDeclareMethodBuilder {
       static?: boolean,
       typeParameters?: K.TSTypeParameterDeclarationKind | null
     }
-  ): N.TSDeclareMethod;
+  ): N.TSDeclareMethod & T;
 }
 
 export interface TSMappedTypeBuilder {
-  (typeParameter: K.TSTypeParameterKind, typeAnnotation?: K.TSTypeKind | null): N.TSMappedType;
-  from(
+  <T = {}>(typeParameter: K.TSTypeParameterKind, typeAnnotation?: K.TSTypeKind | null): N.TSMappedType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -2867,69 +2867,69 @@ export interface TSMappedTypeBuilder {
       typeAnnotation?: K.TSTypeKind | null,
       typeParameter: K.TSTypeParameterKind
     }
-  ): N.TSMappedType;
+  ): N.TSMappedType & T;
 }
 
 export interface TSTupleTypeBuilder {
-  (elementTypes: K.TSTypeKind[]): N.TSTupleType;
-  from(
+  <T = {}>(elementTypes: K.TSTypeKind[]): N.TSTupleType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       elementTypes: K.TSTypeKind[],
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSTupleType;
+  ): N.TSTupleType & T;
 }
 
 export interface TSRestTypeBuilder {
-  (typeAnnotation: K.TSTypeKind): N.TSRestType;
-  from(
+  <T = {}>(typeAnnotation: K.TSTypeKind): N.TSRestType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       typeAnnotation: K.TSTypeKind
     }
-  ): N.TSRestType;
+  ): N.TSRestType & T;
 }
 
 export interface TSOptionalTypeBuilder {
-  (typeAnnotation: K.TSTypeKind): N.TSOptionalType;
-  from(
+  <T = {}>(typeAnnotation: K.TSTypeKind): N.TSOptionalType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       typeAnnotation: K.TSTypeKind
     }
-  ): N.TSOptionalType;
+  ): N.TSOptionalType & T;
 }
 
 export interface TSIndexedAccessTypeBuilder {
-  (objectType: K.TSTypeKind, indexType: K.TSTypeKind): N.TSIndexedAccessType;
-  from(
+  <T = {}>(objectType: K.TSTypeKind, indexType: K.TSTypeKind): N.TSIndexedAccessType & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       indexType: K.TSTypeKind,
       loc?: K.SourceLocationKind | null,
       objectType: K.TSTypeKind
     }
-  ): N.TSIndexedAccessType;
+  ): N.TSIndexedAccessType & T;
 }
 
 export interface TSTypeOperatorBuilder {
-  (operator: string): N.TSTypeOperator;
-  from(
+  <T = {}>(operator: string): N.TSTypeOperator & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       operator: string,
       typeAnnotation: K.TSTypeKind
     }
-  ): N.TSTypeOperator;
+  ): N.TSTypeOperator & T;
 }
 
 export interface TSIndexSignatureBuilder {
-  (parameters: K.IdentifierKind[]): N.TSIndexSignature;
-  from(
+  <T = {}>(parameters: K.IdentifierKind[]): N.TSIndexSignature & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -2937,12 +2937,12 @@ export interface TSIndexSignatureBuilder {
       readonly?: boolean,
       typeAnnotation?: K.TSTypeAnnotationKind | null
     }
-  ): N.TSIndexSignature;
+  ): N.TSIndexSignature & T;
 }
 
 export interface TSPropertySignatureBuilder {
-  (key: K.ExpressionKind): N.TSPropertySignature;
-  from(
+  <T = {}>(key: K.ExpressionKind): N.TSPropertySignature & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       computed?: boolean,
@@ -2953,12 +2953,12 @@ export interface TSPropertySignatureBuilder {
       readonly?: boolean,
       typeAnnotation?: K.TSTypeAnnotationKind | null
     }
-  ): N.TSPropertySignature;
+  ): N.TSPropertySignature & T;
 }
 
 export interface TSMethodSignatureBuilder {
-  (key: K.ExpressionKind): N.TSMethodSignature;
-  from(
+  <T = {}>(key: K.ExpressionKind): N.TSMethodSignature & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       computed?: boolean,
@@ -2969,27 +2969,27 @@ export interface TSMethodSignatureBuilder {
       typeAnnotation?: K.TSTypeAnnotationKind | null,
       typeParameters?: K.TSTypeParameterDeclarationKind | null
     }
-  ): N.TSMethodSignature;
+  ): N.TSMethodSignature & T;
 }
 
 export interface TSTypePredicateBuilder {
-  (
+  <T = {}>(
     parameterName: K.IdentifierKind | K.TSThisTypeKind,
     typeAnnotation: K.TSTypeAnnotationKind
-  ): N.TSTypePredicate;
-  from(
+  ): N.TSTypePredicate & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       parameterName: K.IdentifierKind | K.TSThisTypeKind,
       typeAnnotation: K.TSTypeAnnotationKind
     }
-  ): N.TSTypePredicate;
+  ): N.TSTypePredicate & T;
 }
 
 export interface TSCallSignatureDeclarationBuilder {
-  (parameters: (K.IdentifierKind | K.RestElementKind)[]): N.TSCallSignatureDeclaration;
-  from(
+  <T = {}>(parameters: (K.IdentifierKind | K.RestElementKind)[]): N.TSCallSignatureDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -2997,12 +2997,12 @@ export interface TSCallSignatureDeclarationBuilder {
       typeAnnotation?: K.TSTypeAnnotationKind | null,
       typeParameters?: K.TSTypeParameterDeclarationKind | null
     }
-  ): N.TSCallSignatureDeclaration;
+  ): N.TSCallSignatureDeclaration & T;
 }
 
 export interface TSConstructSignatureDeclarationBuilder {
-  (parameters: (K.IdentifierKind | K.RestElementKind)[]): N.TSConstructSignatureDeclaration;
-  from(
+  <T = {}>(parameters: (K.IdentifierKind | K.RestElementKind)[]): N.TSConstructSignatureDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
@@ -3010,51 +3010,51 @@ export interface TSConstructSignatureDeclarationBuilder {
       typeAnnotation?: K.TSTypeAnnotationKind | null,
       typeParameters?: K.TSTypeParameterDeclarationKind | null
     }
-  ): N.TSConstructSignatureDeclaration;
+  ): N.TSConstructSignatureDeclaration & T;
 }
 
 export interface TSEnumMemberBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind | K.StringLiteralKind,
     initializer?: K.ExpressionKind | null
-  ): N.TSEnumMember;
-  from(
+  ): N.TSEnumMember & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind | K.StringLiteralKind,
       initializer?: K.ExpressionKind | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSEnumMember;
+  ): N.TSEnumMember & T;
 }
 
 export interface TSTypeQueryBuilder {
-  (exprName: K.IdentifierKind): N.TSTypeQuery;
-  from(
+  <T = {}>(exprName: K.IdentifierKind): N.TSTypeQuery & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       exprName: K.IdentifierKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSTypeQuery;
+  ): N.TSTypeQuery & T;
 }
 
 export interface TSTypeLiteralBuilder {
-  (
+  <T = {}>(
     members: (K.TSCallSignatureDeclarationKind | K.TSConstructSignatureDeclarationKind | K.TSIndexSignatureKind | K.TSMethodSignatureKind | K.TSPropertySignatureKind)[]
-  ): N.TSTypeLiteral;
-  from(
+  ): N.TSTypeLiteral & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null,
       members: (K.TSCallSignatureDeclarationKind | K.TSConstructSignatureDeclarationKind | K.TSIndexSignatureKind | K.TSMethodSignatureKind | K.TSPropertySignatureKind)[]
     }
-  ): N.TSTypeLiteral;
+  ): N.TSTypeLiteral & T;
 }
 
 export interface TSTypeAssertionBuilder {
-  (typeAnnotation: K.TSTypeKind, expression: K.ExpressionKind): N.TSTypeAssertion;
-  from(
+  <T = {}>(typeAnnotation: K.TSTypeKind, expression: K.ExpressionKind): N.TSTypeAssertion & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expression: K.ExpressionKind,
@@ -3064,12 +3064,12 @@ export interface TSTypeAssertionBuilder {
       loc?: K.SourceLocationKind | null,
       typeAnnotation: K.TSTypeKind
     }
-  ): N.TSTypeAssertion;
+  ): N.TSTypeAssertion & T;
 }
 
 export interface TSEnumDeclarationBuilder {
-  (id: K.IdentifierKind, members: K.TSEnumMemberKind[]): N.TSEnumDeclaration;
-  from(
+  <T = {}>(id: K.IdentifierKind, members: K.TSEnumMemberKind[]): N.TSEnumDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       const?: boolean,
@@ -3079,12 +3079,12 @@ export interface TSEnumDeclarationBuilder {
       loc?: K.SourceLocationKind | null,
       members: K.TSEnumMemberKind[]
     }
-  ): N.TSEnumDeclaration;
+  ): N.TSEnumDeclaration & T;
 }
 
 export interface TSTypeAliasDeclarationBuilder {
-  (id: K.IdentifierKind): N.TSTypeAliasDeclaration;
-  from(
+  <T = {}>(id: K.IdentifierKind): N.TSTypeAliasDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       declare?: boolean,
@@ -3093,26 +3093,26 @@ export interface TSTypeAliasDeclarationBuilder {
       typeAnnotation: K.TSTypeKind,
       typeParameters?: K.TSTypeParameterDeclarationKind | null
     }
-  ): N.TSTypeAliasDeclaration;
+  ): N.TSTypeAliasDeclaration & T;
 }
 
 export interface TSModuleBlockBuilder {
-  (body: K.StatementKind[]): N.TSModuleBlock;
-  from(
+  <T = {}>(body: K.StatementKind[]): N.TSModuleBlock & T;
+  from<T = {}>(
     params: {
       body: K.StatementKind[],
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSModuleBlock;
+  ): N.TSModuleBlock & T;
 }
 
 export interface TSModuleDeclarationBuilder {
-  (
+  <T = {}>(
     id: K.StringLiteralKind | K.IdentifierKind | K.TSQualifiedNameKind,
     body?: K.TSModuleBlockKind | K.TSModuleDeclarationKind | null
-  ): N.TSModuleDeclaration;
-  from(
+  ): N.TSModuleDeclaration & T;
+  from<T = {}>(
     params: {
       body?: K.TSModuleBlockKind | K.TSModuleDeclarationKind | null,
       comments?: K.CommentKind[] | null,
@@ -3121,15 +3121,15 @@ export interface TSModuleDeclarationBuilder {
       id: K.StringLiteralKind | K.IdentifierKind | K.TSQualifiedNameKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSModuleDeclaration;
+  ): N.TSModuleDeclaration & T;
 }
 
 export interface TSImportEqualsDeclarationBuilder {
-  (
+  <T = {}>(
     id: K.IdentifierKind,
     moduleReference: K.IdentifierKind | K.TSQualifiedNameKind | K.TSExternalModuleReferenceKind
-  ): N.TSImportEqualsDeclaration;
-  from(
+  ): N.TSImportEqualsDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind,
@@ -3137,73 +3137,73 @@ export interface TSImportEqualsDeclarationBuilder {
       loc?: K.SourceLocationKind | null,
       moduleReference: K.IdentifierKind | K.TSQualifiedNameKind | K.TSExternalModuleReferenceKind
     }
-  ): N.TSImportEqualsDeclaration;
+  ): N.TSImportEqualsDeclaration & T;
 }
 
 export interface TSExternalModuleReferenceBuilder {
-  (expression: K.StringLiteralKind): N.TSExternalModuleReference;
-  from(
+  <T = {}>(expression: K.StringLiteralKind): N.TSExternalModuleReference & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expression: K.StringLiteralKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSExternalModuleReference;
+  ): N.TSExternalModuleReference & T;
 }
 
 export interface TSExportAssignmentBuilder {
-  (expression: K.ExpressionKind): N.TSExportAssignment;
-  from(
+  <T = {}>(expression: K.ExpressionKind): N.TSExportAssignment & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expression: K.ExpressionKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSExportAssignment;
+  ): N.TSExportAssignment & T;
 }
 
 export interface TSNamespaceExportDeclarationBuilder {
-  (id: K.IdentifierKind): N.TSNamespaceExportDeclaration;
-  from(
+  <T = {}>(id: K.IdentifierKind): N.TSNamespaceExportDeclaration & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       id: K.IdentifierKind,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSNamespaceExportDeclaration;
+  ): N.TSNamespaceExportDeclaration & T;
 }
 
 export interface TSInterfaceBodyBuilder {
-  (
+  <T = {}>(
     body: (K.TSCallSignatureDeclarationKind | K.TSConstructSignatureDeclarationKind | K.TSIndexSignatureKind | K.TSMethodSignatureKind | K.TSPropertySignatureKind)[]
-  ): N.TSInterfaceBody;
-  from(
+  ): N.TSInterfaceBody & T;
+  from<T = {}>(
     params: {
       body: (K.TSCallSignatureDeclarationKind | K.TSConstructSignatureDeclarationKind | K.TSIndexSignatureKind | K.TSMethodSignatureKind | K.TSPropertySignatureKind)[],
       comments?: K.CommentKind[] | null,
       loc?: K.SourceLocationKind | null
     }
-  ): N.TSInterfaceBody;
+  ): N.TSInterfaceBody & T;
 }
 
 export interface TSExpressionWithTypeArgumentsBuilder {
-  (
+  <T = {}>(
     expression: K.IdentifierKind | K.TSQualifiedNameKind,
     typeParameters?: K.TSTypeParameterInstantiationKind | null
-  ): N.TSExpressionWithTypeArguments;
-  from(
+  ): N.TSExpressionWithTypeArguments & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       expression: K.IdentifierKind | K.TSQualifiedNameKind,
       loc?: K.SourceLocationKind | null,
       typeParameters?: K.TSTypeParameterInstantiationKind | null
     }
-  ): N.TSExpressionWithTypeArguments;
+  ): N.TSExpressionWithTypeArguments & T;
 }
 
 export interface TSInterfaceDeclarationBuilder {
-  (id: K.IdentifierKind | K.TSQualifiedNameKind, body: K.TSInterfaceBodyKind): N.TSInterfaceDeclaration;
-  from(
+  <T = {}>(id: K.IdentifierKind | K.TSQualifiedNameKind, body: K.TSInterfaceBodyKind): N.TSInterfaceDeclaration & T;
+  from<T = {}>(
     params: {
       body: K.TSInterfaceBodyKind,
       comments?: K.CommentKind[] | null,
@@ -3213,12 +3213,12 @@ export interface TSInterfaceDeclarationBuilder {
       loc?: K.SourceLocationKind | null,
       typeParameters?: K.TSTypeParameterDeclarationKind | null
     }
-  ): N.TSInterfaceDeclaration;
+  ): N.TSInterfaceDeclaration & T;
 }
 
 export interface TSParameterPropertyBuilder {
-  (parameter: K.IdentifierKind | K.AssignmentPatternKind): N.TSParameterProperty;
-  from(
+  <T = {}>(parameter: K.IdentifierKind | K.AssignmentPatternKind): N.TSParameterProperty & T;
+  from<T = {}>(
     params: {
       accessibility?: "public" | "private" | "protected" | "undefined",
       comments?: K.CommentKind[] | null,
@@ -3226,17 +3226,17 @@ export interface TSParameterPropertyBuilder {
       parameter: K.IdentifierKind | K.AssignmentPatternKind,
       readonly?: boolean
     }
-  ): N.TSParameterProperty;
+  ): N.TSParameterProperty & T;
 }
 
 export interface OptionalMemberExpressionBuilder {
-  (
+  <T = {}>(
     object: K.ExpressionKind,
     property: K.IdentifierKind | K.ExpressionKind,
     computed?: boolean,
     optional?: boolean
-  ): N.OptionalMemberExpression;
-  from(
+  ): N.OptionalMemberExpression & T;
+  from<T = {}>(
     params: {
       comments?: K.CommentKind[] | null,
       computed?: boolean,
@@ -3245,16 +3245,16 @@ export interface OptionalMemberExpressionBuilder {
       optional?: boolean,
       property: K.IdentifierKind | K.ExpressionKind
     }
-  ): N.OptionalMemberExpression;
+  ): N.OptionalMemberExpression & T;
 }
 
 export interface OptionalCallExpressionBuilder {
-  (
+  <T = {}>(
     callee: K.ExpressionKind,
     argumentsParam: (K.ExpressionKind | K.SpreadElementKind)[],
     optional?: boolean
-  ): N.OptionalCallExpression;
-  from(
+  ): N.OptionalCallExpression & T;
+  from<T = {}>(
     params: {
       arguments: (K.ExpressionKind | K.SpreadElementKind)[],
       callee: K.ExpressionKind,
@@ -3262,7 +3262,7 @@ export interface OptionalCallExpressionBuilder {
       loc?: K.SourceLocationKind | null,
       optional?: boolean
     }
-  ): N.OptionalCallExpression;
+  ): N.OptionalCallExpression & T;
 }
 
 export interface Builders {

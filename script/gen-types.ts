@@ -243,14 +243,21 @@ const out = [
       ...builderTypeNames.map(typeName => {
         const typeDef = astTypes.Type.def(typeName);
 
-        const returnType = b.tsTypeAnnotation.from({
-          typeAnnotation: b.tsTypeReference.from({
-            typeName: b.tsQualifiedName.from({
-              left: b.identifier("N"),
-              right: b.identifier(typeName),
-            }),
-          }),
-        });
+        const typeParameters = b.tsTypeParameterDeclaration([
+          b.tsTypeParameter("T", null, b.tsTypeLiteral([])),
+        ]);
+
+        const returnType = b.tsTypeAnnotation(
+          b.tsIntersectionType([
+            b.tsTypeReference(
+              b.tsQualifiedName.from({
+                left: b.identifier("N"),
+                right: b.identifier(typeName),
+              })
+            ),
+            b.tsTypeReference(b.identifier("T")),
+          ])
+        );
 
         const buildParamAllowsUndefined: { [buildParam: string]: boolean } = {};
         const buildParamIsOptional: { [buildParam: string]: boolean } = {};
@@ -275,6 +282,7 @@ const out = [
             body: b.tsInterfaceBody.from({
               body: [
                 b.tsCallSignatureDeclaration.from({
+                  typeParameters,
                   parameters: typeDef.buildParams
                     .filter(buildParam => !!typeDef.allFields[buildParam])
                     .map(buildParam => {
@@ -299,6 +307,7 @@ const out = [
                 }),
                 b.tsMethodSignature.from({
                   key: b.identifier("from"),
+                  typeParameters,
                   parameters: [
                     b.identifier.from({
                       name: "params",

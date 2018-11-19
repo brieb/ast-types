@@ -1488,7 +1488,7 @@ describe("types.defineMethod", function() {
     this.loc = loc;
   }
 
-  var thisExpr: any = b.thisExpression();
+  var thisExpr = b.thisExpression<{ at: typeof at }>();
 
   it("should allow defining an .at method", function() {
     assert.strictEqual(types.defineMethod("at", at), void 0);
@@ -1499,10 +1499,10 @@ describe("types.defineMethod", function() {
       b.position(1, 4)
     ));
 
-    assert.strictEqual(thisExpr.loc.start.line, 1);
-    assert.strictEqual(thisExpr.loc.start.column, 0);
-    assert.strictEqual(thisExpr.loc.end.line, 1);
-    assert.strictEqual(thisExpr.loc.end.column, 4);
+    assert.strictEqual(thisExpr.loc!.start.line, 1);
+    assert.strictEqual(thisExpr.loc!.start.column, 0);
+    assert.strictEqual(thisExpr.loc!.end.line, 1);
+    assert.strictEqual(thisExpr.loc!.end.column, 4);
   });
 
   it("should allow methods to be removed", function() {
