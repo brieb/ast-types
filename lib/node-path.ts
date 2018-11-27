@@ -7,12 +7,21 @@ export interface NodePath<N extends ASTNode = any, V = any> extends Path<V> {
   node: N;
   parent: any;
   scope: any;
-  replace: Path['replace'];
   prune(...args: any[]): any;
-  _computeNode(): any;
-  _computeParent(): any;
-  _computeScope(): Scope | null;
   getValueProperty(name: any): any;
+  /**
+   * Determine whether this.node needs to be wrapped in parentheses in order
+   * for a parser to reproduce the same local AST structure.
+   *
+   * For instance, in the expression `(1 + 2) * 3`, the BinaryExpression
+   * whose operator is "+" needs parentheses, because `1 + 2 * 3` would
+   * parse differently.
+   *
+   * If assumeExpressionContext === true, we don't worry about edge cases
+   * like an anonymous FunctionExpression appearing lexically first in its
+   * enclosing statement and thus needing parentheses to avoid being parsed
+   * as a FunctionDeclaration with a missing name.
+   */
   needsParens(assumeExpressionContext?: boolean): boolean;
   canBeFirstInStatement(): boolean;
   firstInStatement(): boolean;
@@ -31,305 +40,278 @@ export default function nodePathPlugin(fork: Fork): NodePathConstructor {
   var Path = fork.use(pathPlugin);
   var Scope = fork.use(scopePlugin);
 
-  const NodePath = function NodePath(this: NodePath, value: any, parentPath?: any, name?: any) {
-    if (!(this instanceof NodePath)) {
-      throw new Error("NodePath constructor cannot be invoked without 'new'");
-    }
-    Path.call(this, value, parentPath, name);
-  } as any as NodePathConstructor;
-
-  var NPp: NodePath = NodePath.prototype = Object.create(Path.prototype, {
-    constructor: {
-      value: NodePath,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-
-  Object.defineProperties(NPp, {
-    node: {
-      get: function () {
-        Object.defineProperty(this, "node", {
-          configurable: true, // Enable deletion.
-          value: this._computeNode()
-        });
-
-        return this.node;
-      }
-    },
-
-    parent: {
-      get: function () {
-        Object.defineProperty(this, "parent", {
-          configurable: true, // Enable deletion.
-          value: this._computeParent()
-        });
-
-        return this.parent;
-      }
-    },
-
-    scope: {
-      get: function () {
-        Object.defineProperty(this, "scope", {
-          configurable: true, // Enable deletion.
-          value: this._computeScope()
-        });
-
-        return this.scope;
+  class NodePathImpl extends Path implements NodePath {
+    constructor(value: any, parentPath?: any, name?: any) {
+      super(value, parentPath, name);
+      if (!(this instanceof NodePathImpl)) {
+        throw new Error("NodePath constructor cannot be invoked without 'new'");
       }
     }
-  });
 
-  NPp.replace = function () {
-    delete this.node;
-    delete this.parent;
-    delete this.scope;
-    return Path.prototype.replace.apply(this, arguments);
-  };
+    get node(): any {
+      Object.defineProperty(this, "node", {
+        configurable: true, // Enable deletion.
+        value: this._computeNode()
+      });
 
-  NPp.prune = function () {
-    var remainingNodePath = this.parent;
-
-    this.replace();
-
-    return cleanUpNodesAfterPrune(remainingNodePath);
-  };
-
-  // The value of the first ancestor Path whose value is a Node.
-  NPp._computeNode = function () {
-    var value = this.value;
-    if (n.Node.check(value)) {
-      return value;
+      return this.node;
     }
 
-    var pp = this.parentPath;
-    return pp && pp.node || null;
-  };
+    get parent(): any {
+      Object.defineProperty(this, "parent", {
+        configurable: true, // Enable deletion.
+        value: this._computeParent()
+      });
 
-  // The first ancestor Path whose value is a Node distinct from this.node.
-  NPp._computeParent = function () {
-    var value = this.value;
-    var pp = this.parentPath;
+      return this.parent;
+    }
 
-    if (!n.Node.check(value)) {
+    get scope(): any {
+      Object.defineProperty(this, "scope", {
+        configurable: true, // Enable deletion.
+        value: this._computeScope()
+      });
+
+      return this.scope;
+    }
+
+    replace() {
+      delete (this as any).node;
+      delete (this as any).parent;
+      delete (this as any).scope;
+      return super.replace.apply(this, arguments);
+    }
+
+    prune() {
+      var remainingNodePath = this.parent;
+
+      this.replace();
+
+      return cleanUpNodesAfterPrune(remainingNodePath);
+    }
+
+    // The value of the first ancestor Path whose value is a Node.
+    private _computeNode() {
+      var value = this.value;
+      if (n.Node.check(value)) {
+        return value;
+      }
+
+      var pp = this.parentPath;
+      return pp && pp.node || null;
+    }
+
+    // The first ancestor Path whose value is a Node distinct from this.node.
+    private _computeParent() {
+      var value = this.value;
+      var pp = this.parentPath;
+
+      if (!n.Node.check(value)) {
+        while (pp && !n.Node.check(pp.value)) {
+          pp = pp.parentPath;
+        }
+
+        if (pp) {
+          pp = pp.parentPath;
+        }
+      }
+
       while (pp && !n.Node.check(pp.value)) {
         pp = pp.parentPath;
       }
 
-      if (pp) {
-        pp = pp.parentPath;
+      return pp || null;
+    }
+
+    // The closest enclosing scope that governs this node.
+    private _computeScope(): Scope | null {
+      var value = this.value;
+      var pp = this.parentPath;
+      var scope = pp && pp.scope;
+
+      if (n.Node.check(value) &&
+        Scope.isEstablishedBy(value)) {
+        scope = new Scope(this, scope);
       }
+
+      return scope || null;
     }
 
-    while (pp && !n.Node.check(pp.value)) {
-      pp = pp.parentPath;
+    getValueProperty(name: any) {
+      return types.getFieldValue(this.value, name);
     }
 
-    return pp || null;
-  };
-
-  // The closest enclosing scope that governs this node.
-  NPp._computeScope = function () {
-    var value = this.value;
-    var pp = this.parentPath;
-    var scope = pp && pp.scope;
-
-    if (n.Node.check(value) &&
-      Scope.isEstablishedBy(value)) {
-      scope = new Scope(this, scope);
-    }
-
-    return scope || null;
-  };
-
-  NPp.getValueProperty = function (name) {
-    return types.getFieldValue(this.value, name);
-  };
-
-  /**
-   * Determine whether this.node needs to be wrapped in parentheses in order
-   * for a parser to reproduce the same local AST structure.
-   *
-   * For instance, in the expression `(1 + 2) * 3`, the BinaryExpression
-   * whose operator is "+" needs parentheses, because `1 + 2 * 3` would
-   * parse differently.
-   *
-   * If assumeExpressionContext === true, we don't worry about edge cases
-   * like an anonymous FunctionExpression appearing lexically first in its
-   * enclosing statement and thus needing parentheses to avoid being parsed
-   * as a FunctionDeclaration with a missing name.
-   */
-  NPp.needsParens = function (assumeExpressionContext) {
-    var pp = this.parentPath;
-    if (!pp) {
-      return false;
-    }
-
-    var node = this.value;
-
-    // Only expressions need parentheses.
-    if (!n.Expression.check(node)) {
-      return false;
-    }
-
-    // Identifiers never need parentheses.
-    if (node.type === "Identifier") {
-      return false;
-    }
-
-    while (!n.Node.check(pp.value)) {
-      pp = pp.parentPath;
+    needsParens(assumeExpressionContext?: boolean) {
+      var pp = this.parentPath;
       if (!pp) {
         return false;
       }
-    }
 
-    var parent = pp.value;
+      var node = this.value;
 
-    switch (node.type) {
-      case "UnaryExpression":
-      case "SpreadElement":
-      case "SpreadProperty":
-        return parent.type === "MemberExpression"
-          && this.name === "object"
-          && parent.object === node;
+      // Only expressions need parentheses.
+      if (!n.Expression.check(node)) {
+        return false;
+      }
 
-      case "BinaryExpression":
-      case "LogicalExpression":
-        switch (parent.type) {
-          case "CallExpression":
-            return this.name === "callee"
-              && parent.callee === node;
+      // Identifiers never need parentheses.
+      if (node.type === "Identifier") {
+        return false;
+      }
 
-          case "UnaryExpression":
-          case "SpreadElement":
-          case "SpreadProperty":
-            return true;
+      while (!n.Node.check(pp.value)) {
+        pp = pp.parentPath;
+        if (!pp) {
+          return false;
+        }
+      }
 
-          case "MemberExpression":
-            return this.name === "object"
-              && parent.object === node;
+      var parent = pp.value;
 
-          case "BinaryExpression":
-          case "LogicalExpression":
-            var po = parent.operator;
-            var pp = PRECEDENCE[po];
-            var no = node.operator;
-            var np = PRECEDENCE[no];
+      switch (node.type) {
+        case "UnaryExpression":
+        case "SpreadElement":
+        case "SpreadProperty":
+          return parent.type === "MemberExpression"
+            && this.name === "object"
+            && parent.object === node;
 
-            if (pp > np) {
+        case "BinaryExpression":
+        case "LogicalExpression":
+          switch (parent.type) {
+            case "CallExpression":
+              return this.name === "callee"
+                && parent.callee === node;
+
+            case "UnaryExpression":
+            case "SpreadElement":
+            case "SpreadProperty":
               return true;
-            }
 
-            if (pp === np && this.name === "right") {
-              if (parent.right !== node) {
-                throw new Error("Nodes must be equal");
+            case "MemberExpression":
+              return this.name === "object"
+                && parent.object === node;
+
+            case "BinaryExpression":
+            case "LogicalExpression":
+              var po = parent.operator;
+              var pp = PRECEDENCE[po];
+              var no = node.operator;
+              var np = PRECEDENCE[no];
+
+              if (pp > np) {
+                return true;
               }
+
+              if (pp === np && this.name === "right") {
+                if (parent.right !== node) {
+                  throw new Error("Nodes must be equal");
+                }
+                return true;
+              }
+
+            default:
+              return false;
+          }
+
+        case "SequenceExpression":
+          switch (parent.type) {
+            case "ForStatement":
+              // Although parentheses wouldn't hurt around sequence
+              // expressions in the head of for loops, traditional style
+              // dictates that e.g. i++, j++ should not be wrapped with
+              // parentheses.
+              return false;
+
+            case "ExpressionStatement":
+              return this.name !== "expression";
+
+            default:
+              // Otherwise err on the side of overparenthesization, adding
+              // explicit exceptions above if this proves overzealous.
               return true;
-            }
+          }
 
-          default:
-            return false;
-        }
+        case "YieldExpression":
+          switch (parent.type) {
+            case "BinaryExpression":
+            case "LogicalExpression":
+            case "UnaryExpression":
+            case "SpreadElement":
+            case "SpreadProperty":
+            case "CallExpression":
+            case "MemberExpression":
+            case "NewExpression":
+            case "ConditionalExpression":
+            case "YieldExpression":
+              return true;
 
-      case "SequenceExpression":
-        switch (parent.type) {
-          case "ForStatement":
-            // Although parentheses wouldn't hurt around sequence
-            // expressions in the head of for loops, traditional style
-            // dictates that e.g. i++, j++ should not be wrapped with
-            // parentheses.
-            return false;
+            default:
+              return false;
+          }
 
-          case "ExpressionStatement":
-            return this.name !== "expression";
+        case "Literal":
+          return parent.type === "MemberExpression"
+            && isNumber.check(node.value)
+            && this.name === "object"
+            && parent.object === node;
 
-          default:
-            // Otherwise err on the side of overparenthesization, adding
-            // explicit exceptions above if this proves overzealous.
-            return true;
-        }
+        case "AssignmentExpression":
+        case "ConditionalExpression":
+          switch (parent.type) {
+            case "UnaryExpression":
+            case "SpreadElement":
+            case "SpreadProperty":
+            case "BinaryExpression":
+            case "LogicalExpression":
+              return true;
 
-      case "YieldExpression":
-        switch (parent.type) {
-          case "BinaryExpression":
-          case "LogicalExpression":
-          case "UnaryExpression":
-          case "SpreadElement":
-          case "SpreadProperty":
-          case "CallExpression":
-          case "MemberExpression":
-          case "NewExpression":
-          case "ConditionalExpression":
-          case "YieldExpression":
-            return true;
+            case "CallExpression":
+              return this.name === "callee"
+                && parent.callee === node;
 
-          default:
-            return false;
-        }
+            case "ConditionalExpression":
+              return this.name === "test"
+                && parent.test === node;
 
-      case "Literal":
-        return parent.type === "MemberExpression"
-          && isNumber.check(node.value)
-          && this.name === "object"
-          && parent.object === node;
+            case "MemberExpression":
+              return this.name === "object"
+                && parent.object === node;
 
-      case "AssignmentExpression":
-      case "ConditionalExpression":
-        switch (parent.type) {
-          case "UnaryExpression":
-          case "SpreadElement":
-          case "SpreadProperty":
-          case "BinaryExpression":
-          case "LogicalExpression":
-            return true;
+            default:
+              return false;
+          }
 
-          case "CallExpression":
-            return this.name === "callee"
-              && parent.callee === node;
+        default:
+          if (parent.type === "NewExpression" &&
+            this.name === "callee" &&
+            parent.callee === node) {
+            return containsCallExpression(node);
+          }
+      }
 
-          case "ConditionalExpression":
-            return this.name === "test"
-              && parent.test === node;
+      if (assumeExpressionContext !== true &&
+        !this.canBeFirstInStatement() &&
+        this.firstInStatement())
+        return true;
 
-          case "MemberExpression":
-            return this.name === "object"
-              && parent.object === node;
-
-          default:
-            return false;
-        }
-
-      default:
-        if (parent.type === "NewExpression" &&
-          this.name === "callee" &&
-          parent.callee === node) {
-          return containsCallExpression(node);
-        }
+      return false;
     }
 
-    if (assumeExpressionContext !== true &&
-      !this.canBeFirstInStatement() &&
-      this.firstInStatement())
-      return true;
+    canBeFirstInStatement() {
+      var node = this.node;
+      return !n.FunctionExpression.check(node)
+        && !n.ObjectExpression.check(node);
+    }
 
-    return false;
-  };
+    firstInStatement() {
+      return firstInStatement(this);
+    }
+  }
 
   function isBinary(node: any) {
     return n.BinaryExpression.check(node)
       || n.LogicalExpression.check(node);
-  }
-
-  // @ts-ignore 'isUnaryLike' is declared but its value is never read. [6133]
-  function isUnaryLike(node: any) {
-    return n.UnaryExpression.check(node)
-      // I considered making SpreadElement and SpreadProperty subtypes
-      // of UnaryExpression, but they're not really Expression nodes.
-      || (n.SpreadElement && n.SpreadElement.check(node))
-      || (n.SpreadProperty && n.SpreadProperty.check(node));
   }
 
   var PRECEDENCE: any = {};
@@ -366,16 +348,6 @@ export default function nodePathPlugin(fork: Fork): NodePathConstructor {
 
     return false;
   }
-
-  NPp.canBeFirstInStatement = function () {
-    var node = this.node;
-    return !n.FunctionExpression.check(node)
-      && !n.ObjectExpression.check(node);
-  };
-
-  NPp.firstInStatement = function () {
-    return firstInStatement(this);
-  };
 
   function firstInStatement(path: any) {
     for (var node, parent; path.parent; path = path.parent) {
@@ -497,5 +469,5 @@ export default function nodePathPlugin(fork: Fork): NodePathConstructor {
     }
   }
 
-  return NodePath;
+  return NodePathImpl;
 };
