@@ -32,19 +32,19 @@ export default function pathPlugin(fork: Fork): PathConstructor {
   var isArray = types.builtInTypes.array;
   var isNumber = types.builtInTypes.number;
 
-  class Path<V extends { [name: string]: any } = {}> {
+  class PathImpl<V extends { [name: string]: any } = {}> implements Path<V> {
     value: V;
     parentPath: any;
     name: any;
     __childCache: object | null;
 
     constructor(value: V, parentPath?: any, name?: any) {
-      if (!(this instanceof Path)) {
+      if (!(this instanceof PathImpl)) {
         throw new Error("Path constructor cannot be invoked without 'new'");
       }
 
       if (parentPath) {
-        if (!(parentPath instanceof Path)) {
+        if (!(parentPath instanceof PathImpl)) {
           throw new Error("");
         }
       } else {
@@ -272,7 +272,7 @@ export default function pathPlugin(fork: Fork): PathConstructor {
     }
   };
 
-  function getChildCache(path: Path) {
+  function getChildCache(path: PathImpl) {
     // Lazily create the child cache. This also cheapens cache
     // invalidation, since you can just reset path.__childCache to null.
     return path.__childCache || (path.__childCache = Object.create(null));
@@ -351,7 +351,7 @@ export default function pathPlugin(fork: Fork): PathConstructor {
   }
 
   function repairRelationshipWithParent(path: any) {
-    if (!(path instanceof Path)) {
+    if (!(path instanceof PathImpl)) {
       throw new Error("");
     }
 
@@ -392,5 +392,5 @@ export default function pathPlugin(fork: Fork): PathConstructor {
     return path;
   }
 
-  return Path;
+  return PathImpl;
 };
