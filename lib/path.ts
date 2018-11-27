@@ -8,7 +8,6 @@ export interface Path<V = any> {
   value: V;
   parentPath: any;
   name: any;
-  __childCache: object | null;
   getValueProperty(name: any): any;
   get(...names: any[]): any;
   each(callback: any, context: any): any;
@@ -21,11 +20,11 @@ export interface Path<V = any> {
   insertAt(index: number, ...args: any[]): any;
   insertBefore(...args: any[]): any;
   insertAfter(...args: any[]): any;
-  replace(replacement?: ASTNode, ...args: ASTNode[]): any;
+  replace(replacement?: V, ...args: ASTNode[]): any;
 }
 
 export interface PathConstructor {
-  new<V = any>(value: any, parentPath?: any, name?: any): Path<V>;
+  new<V = any>(value: V, parentPath?: any, name?: any): Path<V>;
 }
 
 export default function pathPlugin(fork: Fork): PathConstructor {
@@ -33,39 +32,247 @@ export default function pathPlugin(fork: Fork): PathConstructor {
   var isArray = types.builtInTypes.array;
   var isNumber = types.builtInTypes.number;
 
-  const Path = function Path(this: Path, value: any, parentPath?: any, name?: any) {
-    if (!(this instanceof Path)) {
-      throw new Error("Path constructor cannot be invoked without 'new'");
-    }
+  class Path<V extends { [name: string]: any } = {}> {
+    value: V;
+    parentPath: any;
+    name: any;
+    __childCache: object | null;
 
-    if (parentPath) {
-      if (!(parentPath instanceof Path)) {
-        throw new Error("");
+    constructor(value: V, parentPath?: any, name?: any) {
+      if (!(this instanceof Path)) {
+        throw new Error("Path constructor cannot be invoked without 'new'");
       }
-    } else {
-      parentPath = null;
-      name = null;
+
+      if (parentPath) {
+        if (!(parentPath instanceof Path)) {
+          throw new Error("");
+        }
+      } else {
+        parentPath = null;
+        name = null;
+      }
+
+      // The value encapsulated by this Path, generally equal to
+      // parentPath.value[name] if we have a parentPath.
+      this.value = value;
+
+      // The immediate parent Path of this Path.
+      this.parentPath = parentPath;
+
+      // The name of the property of parentPath.value through which this
+      // Path's value was reached.
+      this.name = name;
+
+      // Calling path.get("child") multiple times always returns the same
+      // child Path object, for both performance and consistency reasons.
+      this.__childCache = null;
     }
 
-    // The value encapsulated by this Path, generally equal to
-    // parentPath.value[name] if we have a parentPath.
-    this.value = value;
+    // This method is designed to be overridden by subclasses that need to
+    // handle missing properties, etc.
+    getValueProperty(name: any) {
+      return this.value[name];
+    }
 
-    // The immediate parent Path of this Path.
-    this.parentPath = parentPath;
+    get(...names: (string | number)[]) {
+      var path = this;
+      var count = names.length;
 
-    // The name of the property of parentPath.value through which this
-    // Path's value was reached.
-    this.name = name;
+      for (var i = 0; i < count; ++i) {
+        path = getChildPath(path, names[i]);
+      }
 
-    // Calling path.get("child") multiple times always returns the same
-    // child Path object, for both performance and consistency reasons.
-    this.__childCache = null;
-  } as any as PathConstructor;
+      return path;
+    }
 
-  var Pp: Path = Path.prototype;
+    each(callback: any, context: any) {
+      var childPaths = [];
+      var len = this.value.length;
+      var i = 0;
 
-  function getChildCache(path: any) {
+      // Collect all the original child paths before invoking the callback.
+      for (var i = 0; i < len; ++i) {
+        if (hasOwn.call(this.value, i)) {
+          childPaths[i] = this.get(i);
+        }
+      }
+
+      // Invoke the callback on just the original child paths, regardless of
+      // any modifications made to the array by the callback. I chose these
+      // semantics over cleverly invoking the callback on new elements because
+      // this way is much easier to reason about.
+      context = context || this;
+      for (i = 0; i < len; ++i) {
+        if (hasOwn.call(childPaths, i)) {
+          callback.call(context, childPaths[i]);
+        }
+      }
+    }
+
+    map(callback: any, context: any) {
+      var result: any[] = [];
+
+      this.each(function (this: any, childPath: any) {
+        result.push(callback.call(this, childPath));
+      }, context);
+
+      return result;
+    }
+
+    filter(callback: any, context: any) {
+      var result: any[] = [];
+
+      this.each(function (this: any, childPath: any) {
+        if (callback.call(this, childPath)) {
+          result.push(childPath);
+        }
+      }, context);
+
+      return result;
+    }
+
+    shift() {
+      var move = getMoves(this, -1);
+      var result = this.value.shift();
+      move();
+      return result;
+    }
+
+    unshift(...args: any[]) {
+      var move = getMoves(this, args.length);
+      var result = this.value.unshift.apply(this.value, args);
+      move();
+      return result;
+    }
+
+    push(...args: any[]) {
+      isArray.assert(this.value);
+      delete getChildCache(this).length
+      return this.value.push.apply(this.value, args);
+    }
+
+    pop() {
+      isArray.assert(this.value);
+      var cache = getChildCache(this);
+      delete cache[this.value.length - 1];
+      delete cache.length;
+      return this.value.pop();
+    }
+
+    insertAt(index: number) {
+      var argc = arguments.length;
+      var move = getMoves(this, argc - 1, index);
+      if (move === emptyMoves) {
+        return this;
+      }
+
+      index = Math.max(index, 0);
+
+      for (var i = 1; i < argc; ++i) {
+        this.value[index + i - 1] = arguments[i];
+      }
+
+      move();
+
+      return this;
+    }
+
+    insertBefore(...args: any[]) {
+      var pp = this.parentPath;
+      var argc = args.length;
+      var insertAtArgs = [this.name];
+      for (var i = 0; i < argc; ++i) {
+        insertAtArgs.push(args[i]);
+      }
+      return pp.insertAt.apply(pp, insertAtArgs);
+    }
+
+    insertAfter(...args: any[]) {
+      var pp = this.parentPath;
+      var argc = args.length;
+      var insertAtArgs = [this.name + 1];
+      for (var i = 0; i < argc; ++i) {
+        insertAtArgs.push(args[i]);
+      }
+      return pp.insertAt.apply(pp, insertAtArgs);
+    }
+
+    replace(replacement?: V) {
+      var results = [];
+      var parentValue = this.parentPath.value;
+      var parentCache = getChildCache(this.parentPath);
+      var count = arguments.length;
+
+      repairRelationshipWithParent(this);
+
+      if (isArray.check(parentValue)) {
+        var originalLength = parentValue.length;
+        var move = getMoves(this.parentPath, count - 1, this.name + 1);
+
+        var spliceArgs = [this.name, 1];
+        for (var i = 0; i < count; ++i) {
+          spliceArgs.push(arguments[i]);
+        }
+
+        var splicedOut = parentValue.splice.apply(parentValue, spliceArgs);
+
+        if (splicedOut[0] !== this.value) {
+          throw new Error("");
+        }
+        if (parentValue.length !== (originalLength - 1 + count)) {
+          throw new Error("");
+        }
+
+        move();
+
+        if (count === 0) {
+          delete this.value;
+          delete parentCache[this.name];
+          this.__childCache = null;
+
+        } else {
+          if (parentValue[this.name] !== replacement) {
+            throw new Error("");
+          }
+
+          if (this.value !== replacement) {
+            this.value = replacement!;
+            this.__childCache = null;
+          }
+
+          for (i = 0; i < count; ++i) {
+            results.push(this.parentPath.get(this.name + i));
+          }
+
+          if (results[0] !== this) {
+            throw new Error("");
+          }
+        }
+
+      } else if (count === 1) {
+        if (this.value !== replacement) {
+          this.__childCache = null;
+        }
+        this.value = parentValue[this.name] = replacement!;
+        results.push(this);
+
+      } else if (count === 0) {
+        delete parentValue[this.name];
+        delete this.value;
+        this.__childCache = null;
+
+        // Leave this path cached as parentCache[this.name], even though
+        // it no longer has a value defined.
+
+      } else {
+        throw new Error("Could not replace path");
+      }
+
+      return results;
+    }
+  };
+
+  function getChildCache(path: Path) {
     // Lazily create the child cache. This also cheapens cache
     // invalidation, since you can just reset path.__childCache to null.
     return path.__childCache || (path.__childCache = Object.create(null));
@@ -84,69 +291,6 @@ export default function pathPlugin(fork: Fork): PathConstructor {
     }
     return childPath;
   }
-
-// This method is designed to be overridden by subclasses that need to
-// handle missing properties, etc.
-  Pp.getValueProperty = function getValueProperty(name) {
-    return this.value[name];
-  };
-
-  Pp.get = function get(...names) {
-    var path = this;
-    var count = names.length;
-
-    for (var i = 0; i < count; ++i) {
-      path = getChildPath(path, names[i]);
-    }
-
-    return path;
-  };
-
-  Pp.each = function each(callback, context) {
-    var childPaths = [];
-    var len = this.value.length;
-    var i = 0;
-
-    // Collect all the original child paths before invoking the callback.
-    for (var i = 0; i < len; ++i) {
-      if (hasOwn.call(this.value, i)) {
-        childPaths[i] = this.get(i);
-      }
-    }
-
-    // Invoke the callback on just the original child paths, regardless of
-    // any modifications made to the array by the callback. I chose these
-    // semantics over cleverly invoking the callback on new elements because
-    // this way is much easier to reason about.
-    context = context || this;
-    for (i = 0; i < len; ++i) {
-      if (hasOwn.call(childPaths, i)) {
-        callback.call(context, childPaths[i]);
-      }
-    }
-  };
-
-  Pp.map = function map(callback, context) {
-    var result: any[] = [];
-
-    this.each(function (this: any, childPath: any) {
-      result.push(callback.call(this, childPath));
-    }, context);
-
-    return result;
-  };
-
-  Pp.filter = function filter(callback, context) {
-    var result: any[] = [];
-
-    this.each(function (this: any, childPath: any) {
-      if (callback.call(this, childPath)) {
-        result.push(childPath);
-      }
-    }, context);
-
-    return result;
-  };
 
   function emptyMoves() {}
   function getMoves(path: any, offset: number, start?: any, end?: any) {
@@ -206,72 +350,6 @@ export default function pathPlugin(fork: Fork): PathConstructor {
     };
   }
 
-  Pp.shift = function shift() {
-    var move = getMoves(this, -1);
-    var result = this.value.shift();
-    move();
-    return result;
-  };
-
-  Pp.unshift = function unshift(...args) {
-    var move = getMoves(this, args.length);
-    var result = this.value.unshift.apply(this.value, args);
-    move();
-    return result;
-  };
-
-  Pp.push = function push(...args) {
-    isArray.assert(this.value);
-    delete getChildCache(this).length
-    return this.value.push.apply(this.value, args);
-  };
-
-  Pp.pop = function pop() {
-    isArray.assert(this.value);
-    var cache = getChildCache(this);
-    delete cache[this.value.length - 1];
-    delete cache.length;
-    return this.value.pop();
-  };
-
-  Pp.insertAt = function insertAt(index) {
-    var argc = arguments.length;
-    var move = getMoves(this, argc - 1, index);
-    if (move === emptyMoves) {
-      return this;
-    }
-
-    index = Math.max(index, 0);
-
-    for (var i = 1; i < argc; ++i) {
-      this.value[index + i - 1] = arguments[i];
-    }
-
-    move();
-
-    return this;
-  };
-
-  Pp.insertBefore = function insertBefore(...args) {
-    var pp = this.parentPath;
-    var argc = args.length;
-    var insertAtArgs = [this.name];
-    for (var i = 0; i < argc; ++i) {
-      insertAtArgs.push(args[i]);
-    }
-    return pp.insertAt.apply(pp, insertAtArgs);
-  };
-
-  Pp.insertAfter = function insertAfter(...args) {
-    var pp = this.parentPath;
-    var argc = args.length;
-    var insertAtArgs = [this.name + 1];
-    for (var i = 0; i < argc; ++i) {
-      insertAtArgs.push(args[i]);
-    }
-    return pp.insertAt.apply(pp, insertAtArgs);
-  };
-
   function repairRelationshipWithParent(path: any) {
     if (!(path instanceof Path)) {
       throw new Error("");
@@ -313,80 +391,6 @@ export default function pathPlugin(fork: Fork): PathConstructor {
 
     return path;
   }
-
-  Pp.replace = function replace(replacement) {
-    var results = [];
-    var parentValue = this.parentPath.value;
-    var parentCache = getChildCache(this.parentPath);
-    var count = arguments.length;
-
-    repairRelationshipWithParent(this);
-
-    if (isArray.check(parentValue)) {
-      var originalLength = parentValue.length;
-      var move = getMoves(this.parentPath, count - 1, this.name + 1);
-
-      var spliceArgs = [this.name, 1];
-      for (var i = 0; i < count; ++i) {
-        spliceArgs.push(arguments[i]);
-      }
-
-      var splicedOut = parentValue.splice.apply(parentValue, spliceArgs);
-
-      if (splicedOut[0] !== this.value) {
-        throw new Error("");
-      }
-      if (parentValue.length !== (originalLength - 1 + count)) {
-        throw new Error("");
-      }
-
-      move();
-
-      if (count === 0) {
-        delete this.value;
-        delete parentCache[this.name];
-        this.__childCache = null;
-
-      } else {
-        if (parentValue[this.name] !== replacement) {
-          throw new Error("");
-        }
-
-        if (this.value !== replacement) {
-          this.value = replacement;
-          this.__childCache = null;
-        }
-
-        for (i = 0; i < count; ++i) {
-          results.push(this.parentPath.get(this.name + i));
-        }
-
-        if (results[0] !== this) {
-          throw new Error("");
-        }
-      }
-
-    } else if (count === 1) {
-      if (this.value !== replacement) {
-        this.__childCache = null;
-      }
-      this.value = parentValue[this.name] = replacement;
-      results.push(this);
-
-    } else if (count === 0) {
-      delete parentValue[this.name];
-      delete this.value;
-      this.__childCache = null;
-
-      // Leave this path cached as parentCache[this.name], even though
-      // it no longer has a value defined.
-
-    } else {
-      throw new Error("Could not replace path");
-    }
-
-    return results;
-  };
 
   return Path;
 };
