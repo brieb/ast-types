@@ -29,7 +29,7 @@ export interface ScopeConstructor {
   isEstablishedBy(node: any): any;
 }
 
-export default function scopePlugin(fork: Fork) {
+export default function scopePlugin(fork: Fork): ScopeConstructor {
   var types = fork.use(typesPlugin);
   var Type = types.Type;
   var namedTypes = types.namedTypes;
@@ -38,35 +38,146 @@ export default function scopePlugin(fork: Fork) {
   var isArray = types.builtInTypes.array;
   var b = types.builders;
 
-  const Scope = function Scope(this: Scope, path: any, parentScope: any) {
-    if (!(this instanceof Scope)) {
-      throw new Error("Scope constructor cannot be invoked without 'new'");
+  class ScopeImpl implements Scope {
+    static isEstablishedBy(node: any) {
+      return ScopeType.check(node);
     }
 
-    ScopeType.assert(path.value);
+    path: any;
+    node: any;
+    isGlobal: boolean;
+    depth: number;
+    parent: any;
+    bindings: any;
+    types: any;
 
-    var depth: number;
+    // Will be overridden after an instance lazily calls scanScope.
+    didScan = false;
 
-    if (parentScope) {
-      if (!(parentScope instanceof Scope)) {
-        throw new Error("");
+    constructor(path: any, parentScope: any) {
+      if (!(this instanceof ScopeImpl)) {
+        throw new Error("Scope constructor cannot be invoked without 'new'");
       }
-      depth = parentScope.depth + 1;
-    } else {
-      parentScope = null;
-      depth = 0;
+
+      ScopeType.assert(path.value);
+
+      var depth: number;
+
+      if (parentScope) {
+        if (!(parentScope instanceof ScopeImpl)) {
+          throw new Error("");
+        }
+        depth = parentScope.depth + 1;
+      } else {
+        parentScope = null;
+        depth = 0;
+      }
+
+      Object.defineProperties(this, {
+        path: { value: path },
+        node: { value: path.value },
+        isGlobal: { value: !parentScope, enumerable: true },
+        depth: { value: depth },
+        parent: { value: parentScope },
+        bindings: { value: {} },
+        types: { value: {} },
+      });
     }
 
-    Object.defineProperties(this, {
-      path: { value: path },
-      node: { value: path.value },
-      isGlobal: { value: !parentScope, enumerable: true },
-      depth: { value: depth },
-      parent: { value: parentScope },
-      bindings: { value: {} },
-      types: { value: {} },
-    });
-  } as any as ScopeConstructor;
+    declares(name: any) {
+      this.scan();
+      return hasOwn.call(this.bindings, name);
+    }
+
+    declaresType(name: any) {
+      this.scan();
+      return hasOwn.call(this.types, name);
+    }
+
+    declareTemporary(prefix?: any) {
+      if (prefix) {
+        if (!/^[a-z$_]/i.test(prefix)) {
+          throw new Error("");
+        }
+      } else {
+        prefix = "t$";
+      }
+
+      // Include this.depth in the name to make sure the name does not
+      // collide with any variables in nested/enclosing scopes.
+      prefix += this.depth.toString(36) + "$";
+
+      this.scan();
+
+      var index = 0;
+      while (this.declares(prefix + index)) {
+        ++index;
+      }
+
+      var name = prefix + index;
+      return this.bindings[name] = types.builders.identifier(name);
+    };
+
+    injectTemporary(identifier: any, init: any) {
+      identifier || (identifier = this.declareTemporary());
+
+      var bodyPath = this.path.get("body");
+      if (namedTypes.BlockStatement.check(bodyPath.value)) {
+        bodyPath = bodyPath.get("body");
+      }
+
+      bodyPath.unshift(
+        b.variableDeclaration(
+        "var",
+        [b.variableDeclarator(identifier, init || null)]
+        )
+      );
+
+      return identifier;
+    };
+
+    scan(force?: any) {
+      if (force || !this.didScan) {
+        for (var name in this.bindings) {
+          // Empty out this.bindings, just in cases.
+          delete this.bindings[name];
+        }
+        scanScope(this.path, this.bindings, this.types);
+        this.didScan = true;
+      }
+    };
+
+    getBindings() {
+      this.scan();
+      return this.bindings;
+    };
+
+    getTypes() {
+      this.scan();
+      return this.types;
+    };
+
+    lookup(name: any) {
+      for (var scope = this; scope; scope = scope.parent)
+        if (scope.declares(name))
+          break;
+      return scope;
+    };
+
+    lookupType(name: any) {
+      for (var scope = this; scope; scope = scope.parent)
+        if (scope.declaresType(name))
+          break;
+      return scope;
+    };
+
+    getGlobalScope() {
+      var scope = this;
+      while (!scope.isGlobal)
+        scope = scope.parent;
+      return scope;
+    };
+  }
 
   var scopeTypes = [
     // Program nodes introduce global scopes.
@@ -82,88 +193,6 @@ export default function scopePlugin(fork: Fork) {
   ];
 
   var ScopeType = Type.or.apply(Type, scopeTypes);
-
-  Scope.isEstablishedBy = function(node) {
-    return ScopeType.check(node);
-  };
-
-  var Sp: Scope = Scope.prototype;
-
-// Will be overridden after an instance lazily calls scanScope.
-  Sp.didScan = false;
-
-  Sp.declares = function(name) {
-    this.scan();
-    return hasOwn.call(this.bindings, name);
-  };
-
-  Sp.declaresType = function(name) {
-    this.scan();
-    return hasOwn.call(this.types, name);
-  };
-
-  Sp.declareTemporary = function(prefix) {
-    if (prefix) {
-      if (!/^[a-z$_]/i.test(prefix)) {
-        throw new Error("");
-      }
-    } else {
-      prefix = "t$";
-    }
-
-    // Include this.depth in the name to make sure the name does not
-    // collide with any variables in nested/enclosing scopes.
-    prefix += this.depth.toString(36) + "$";
-
-    this.scan();
-
-    var index = 0;
-    while (this.declares(prefix + index)) {
-      ++index;
-    }
-
-    var name = prefix + index;
-    return this.bindings[name] = types.builders.identifier(name);
-  };
-
-  Sp.injectTemporary = function(identifier, init) {
-    identifier || (identifier = this.declareTemporary());
-
-    var bodyPath = this.path.get("body");
-    if (namedTypes.BlockStatement.check(bodyPath.value)) {
-      bodyPath = bodyPath.get("body");
-    }
-
-    bodyPath.unshift(
-      b.variableDeclaration(
-      "var",
-      [b.variableDeclarator(identifier, init || null)]
-      )
-    );
-
-    return identifier;
-  };
-
-  Sp.scan = function(force) {
-    if (force || !this.didScan) {
-      for (var name in this.bindings) {
-        // Empty out this.bindings, just in cases.
-        delete this.bindings[name];
-      }
-      scanScope(this.path, this.bindings, this.types);
-      this.didScan = true;
-    }
-  };
-
-  Sp.getBindings = function () {
-    this.scan();
-    return this.bindings;
-  };
-
-  Sp.getTypes = function () {
-    this.scan();
-    return this.types;
-  };
 
   function scanScope(path: any, bindings: any, scopeTypes: any) {
     var node = path.value;
@@ -357,26 +386,5 @@ export default function scopePlugin(fork: Fork) {
     }
   }
 
-  Sp.lookup = function(name) {
-    for (var scope = this; scope; scope = scope.parent)
-      if (scope.declares(name))
-        break;
-    return scope;
-  };
-
-  Sp.lookupType = function(name) {
-    for (var scope = this; scope; scope = scope.parent)
-      if (scope.declaresType(name))
-        break;
-    return scope;
-  };
-
-  Sp.getGlobalScope = function() {
-    var scope = this;
-    while (!scope.isGlobal)
-      scope = scope.parent;
-    return scope;
-  };
-
-  return Scope;
+  return ScopeImpl;
 };
